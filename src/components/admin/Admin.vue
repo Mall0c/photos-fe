@@ -1,0 +1,317 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useErrorStore } from '@/stores/errors.store';
+import { useAuthStore, ROLES } from '@/stores/auth.store';
+import { onBeforeRouteLeave, useRouter } from 'vue-router';
+import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
+
+const router = useRouter()
+
+const errorStore = useErrorStore()
+const authStore = useAuthStore()
+
+const modalDialogDeleteUser = ref(null)
+const showModalDeleteUser = ref(false)
+
+// Array of users.
+const users = ref([])
+// ID of the user, when the delete button is clicked.
+const userToDelete = ref(null)
+const jwtToken = authStore.token
+const editing = ref(false)
+// Do we have unsaved changes? If yes, ask the user before refreshing or leaving the page.
+const unsavedChanges = ref(false)
+const currentlyEditedRow = ref(null)
+
+function fetchUsers(offset) {
+    const requestOptions = {
+            method: "GET",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + jwtToken
+            }
+        }
+        fetch(`http://localhost:3000/users/${offset}`, requestOptions)
+            .then(async response => {
+                const responseParsed = await response.json()
+                if (response.status === 200) {
+                    users.value = responseParsed
+                } else if (response.status === 401 || response.status === 403) {
+                    errorStore.setError("Nicht eingeloggt oder keine Berechtigung.")
+                }
+            })
+            .catch(err => {
+                errorStore.setError(err)
+            })
+}
+
+/**
+ * Initial load of users.
+ */
+onMounted(() => {
+    fetchUsers(0)
+})
+
+/**
+ * Ask for confirmation if user wants to switch to a different component.
+ */
+onBeforeRouteLeave(() => {
+    if(unsavedChanges.value === true) {
+        if (confirm("Es gibt ungespeicherte Änderungen. Möchtest Du die Seite wirklich verlassen?")) {
+            return true
+        }
+        return false
+    }
+    return true
+})
+
+/**
+ * Ask for confirmation if user wants to reload / close tab when there is unsaved data.
+ */
+window.onbeforeunload = function (e) {
+    // Um den Dialog *NICHT* anzuzeigen, kann man z. B. "null" zurückgeben. "false" funktioniert nicht.
+    // https://stackoverflow.com/a/59618875
+    return unsavedChanges.value === true ? true : null
+};
+
+
+function saveUserChanges(idx, userId) {
+    const userName = document.getElementById("user-name-" + idx).value
+    const roleElem = document.getElementById("select-roles-" + idx)
+    const role = roleElem.options[roleElem.selectedIndex].text
+    
+    // Map string representation of role (Owner, Admin, Guest) to number (0, 1, 2)
+    const roleAsNumber = ROLES[role]
+
+    // Changes are about to be saved. Dont warn user if he wants to reload or leave the page.
+    unsavedChanges.value = false
+    
+    const requestOptions = {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + jwtToken
+            },
+            body: JSON.stringify({ name: userName, role: roleAsNumber })
+        }
+        fetch(`http://localhost:3000/admin/user/${userId}`, requestOptions)
+            .then(async response => {
+                const responseParsed = await response.json()
+                if (response.status === 201) {
+                    console.log("Success")
+                } else if (response.status === 400) {
+                    console.log("Nicht so viel Success")
+                }
+            })
+            .catch(err => {
+                errorStore.setError(err)
+            })
+            .finally(() => {
+                makeReadonly(idx)
+            })
+}
+
+function deleteUser(userId) {
+    showModalDeleteUser.value = false
+    const requestOptions = {
+            method: "DELETE",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + jwtToken
+            }
+        }
+    fetch(`http://localhost:3000/admin/user/${userId}`, requestOptions)
+        .then(async response => {
+            const responseParsed = await response.json()
+            if (response.status === 200) {
+                console.log("Success")
+            } else if (response.status === 400) {
+                console.log("Nicht so viel Success")
+            }
+            router.go()
+        })
+        .catch(err => {
+            errorStore.setError(err)
+        })
+        .finally(() => {
+            userToDelete.value = null
+        })
+}
+
+/**
+ * Make input field and role selector readonly and adjust visibility of buttons.
+ * @param idx 0-based idx of the row in the table.
+ */
+function makeReadonly(idx) {
+    const userNameElem = document.getElementById("user-name-" + idx)
+    userNameElem.readOnly = true
+    userNameElem.classList.remove("edit-highlight")
+
+    const roleElem = document.getElementById("select-roles-" + idx)
+    roleElem.disabled = true
+    roleElem.classList.remove("edit-highlight")
+    editing.value = false
+
+    document.getElementById("edit-button-" + idx).style.display = "inline-block"
+    document.getElementById("close-button-" + idx).style.display = "none"
+    document.getElementById("save-button-" + idx).style.display = "none"
+
+    currentlyEditedRow.value = null
+}
+
+/**
+ * Make input field and role selector editable and adjust visibility of buttons.
+ * @param idx 0-based idx of the row in the table.
+ */
+function makeEditable(idx) {
+    const userNameElem = document.getElementById("user-name-" + idx)
+    userNameElem.readOnly = false
+    userNameElem.classList.add("edit-highlight")
+
+    const roleElem = document.getElementById("select-roles-" + idx)
+    roleElem.disabled = false
+    roleElem.classList.add("edit-highlight")
+    editing.value = true
+
+    document.getElementById("edit-button-" + idx).style.display = "none"
+    document.getElementById("close-button-" + idx).style.display = "inline-block"
+    document.getElementById("save-button-" + idx).style.display = "inline-block"
+}
+
+/**
+ * Make input field and role selector editable or readonly, depending on the "editing" ref variable.
+ * @param idx 0-based idx of the row in the table.
+ */
+function editToggle(idx) {
+    // "currentlyEditedRow" makes sure only one row can be edited at the same time.
+    if (currentlyEditedRow.value === idx || currentlyEditedRow.value === null) {
+        if (editing.value === false) {
+            currentlyEditedRow.value = idx
+            makeEditable(idx)
+        } else {
+            makeReadonly(idx)
+        }
+    }
+}
+
+/**
+ * The roles select element should have the current user role as first element.
+ * This function returns an array of roles, where the first element is the current user role
+ * so that it is shown as default value.
+ * @param role Current user role
+ * @returns Array of user roles, where the first element is the current user's role.
+ */
+function reorderRoleArray(role) {
+    let currentRole = "Guest"
+    // Map number representation (0, 1, 2) to string (Owner, Admin, Guest)
+    for (const [key, val] of Object.entries(ROLES)) {
+        if (role === val) {
+            currentRole = key
+            break
+        }
+    }
+    const roles = Object.keys(ROLES).filter(elem => elem !== currentRole)
+    roles.unshift(currentRole)
+    return roles
+}
+
+</script>
+
+<template>
+    <div class="table-title">
+        Registrierte Nutzer
+    </div>
+    <div class="table-container">
+        <table class="table-layout">
+            <tr class="table-header">
+                <td>ID</td>
+                <td>E-Mails</td>
+                <td>Name</td>
+                <td>Rolle</td>
+                <td>Aktion</td>
+            </tr>
+            <tr v-for="(user, idx) in users">
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <input @input="unsavedChanges = true" type="text" :id="'user-name-' + idx" v-model="user.name" readonly />
+                </td>
+                <td>
+                    <select @input="unsavedChanges = true" name="roles" :id="'select-roles-' + idx" disabled="true" style="color: black;">
+                        <option v-for="role in reorderRoleArray(user.role)">
+                            {{ role }}
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <img :id="'edit-button-' + idx" @click="editToggle(idx)" src="../../../public/edit-icon-png-3602.png" width="20px" height="20px">
+                    <img :id="'close-button-' + idx" @click="editToggle(idx)" src="../../../public/211652_close_icon.png" width="20px" height="20px" style="display: none;">
+                    <img :id="'delete-button-' + idx" @click="{showModalDeleteUser = true; userToDelete = user.id}" src="../../../public/pngwing.com.png" width="20px" height="20px">
+                    <img :id="'save-button-' + idx" @click="saveUserChanges(idx, user.id)" src="../../../public/save.256x256.png" width="20px" height="20px" style="display: none;">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="table-title">
+        Von Nutzern hochgeladene Bilder
+    </div>
+    <div class="table-container">
+        <table class="table-layout">
+            <tr class="table-header">
+                <td>ID</td>
+                <td>Nutzer</td>
+                <td>Beschreibung</td>
+                <td>Link</td>
+                <td>Aktion</td>
+            </tr>
+        </table>
+    </div>
+    <ModalDialogButton
+        v-if="showModalDeleteUser"
+        ref="modalDialogDeleteUser"
+        buttonColor="red"
+        message="Benutzer wirklich löschen?"
+        @confirm="deleteUser(userToDelete)"
+        @close="showModalDeleteUser = false"
+    />
+</template>
+
+<style>
+
+.table-header {
+    background: #04AA6D;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.edit-highlight {
+    border: 1px solid blue;
+}
+
+.table-container {
+    margin: 20px;
+}
+
+.table-title {
+    font-weight: bold;
+    margin: 20px;
+}
+
+.table-layout {
+    width: 100%;
+    word-wrap: break-word;
+    border-collapse: collapse;
+}
+
+/** Makes every second row slightly more gray. */
+.table-container tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+/** Makes every second row slightly more gray. */
+.table-container tr:last-of-type {
+    border-bottom: 2px solid #04AA6D;
+}
+
+</style>
