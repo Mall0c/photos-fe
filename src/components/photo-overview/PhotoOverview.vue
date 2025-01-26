@@ -1,15 +1,15 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import CommentArea from './CommentArea.vue'
 
-const filenames = ref(null)
+const fileIds = ref(null)
 const error = ref(null)
 const pageNumber = ref(0)
 const currentImageNumber = ref(0)
 const imgPerPage = 5
 
 const currentFilename = computed(() => {
-    return filenames.value[currentImageNumber.value]
+    return fileIds.value[currentImageNumber.value]
 })
 
 /**
@@ -55,24 +55,26 @@ function alterPageNumber(val) {
 /**
  * Fetch file names from backend.
  */
-function fetchFilenames() {
+function fetchFileIds() {
     fetch("http://localhost:3000/images")
         .then(res => res.json())
-        .then(res => filenames.value = res)
+        .then(res => fileIds.value = res)
         .catch(err => error.value = err)
 }
 
-fetchFilenames()
+onBeforeMount(() => {
+    fetchFileIds()
+})
 </script>
 
 <template>
-    <div v-if="filenames" class="main-container">
+    <div v-if="fileIds" class="main-container">
         <div class="interaction-container">
             <div class="slide-image-arrow col-1">
                 <div @click="alterCurrentImage(-1)">&#8592;</div>
             </div>
             <div class="big-photo-container col-7">
-                <img :src="`http://localhost:3000/images/${filenames[currentImageNumber]}`" />
+                <img :src="`http://localhost:3000/images/${fileIds[currentImageNumber]}`" />
             </div>
             <div class="image-info-container col-3">
                 <KeepAlive>
@@ -85,7 +87,7 @@ fetchFilenames()
         </div>
         <div class="photo-slide-container">
             <div 
-                v-for="(file, idx) in filenames.slice(pageNumber * imgPerPage, (pageNumber + 1) * imgPerPage)" 
+                v-for="(file, idx) in fileIds.slice(pageNumber * imgPerPage, (pageNumber + 1) * imgPerPage)" 
                 class="photo-preview"
             >
                 <img :src="`http://localhost:3000/images/scaled/${file}`" @click="currentImageNumber = (pageNumber * imgPerPage) + idx" />
@@ -98,7 +100,7 @@ fetchFilenames()
             | 
             <!-- Stop pagination after all images were shown. -->
             <span
-                v-if="Math.floor(filenames.length / imgPerPage) > pageNumber"
+                v-if="Math.floor(fileIds.length / imgPerPage) > pageNumber"
                 @click="alterPageNumber(1)"
             >
                 Nächste Seite
