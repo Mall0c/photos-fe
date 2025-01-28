@@ -1,8 +1,25 @@
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue';
+import { ref, computed, onBeforeMount, useTemplateRef } from 'vue';
 
 const fileIds = ref(null)
 const error = ref(null)
+const dialogRef = useTemplateRef("dialog")
+const dialogOpened = ref(false)
+
+function toggleDialog(fileId) {
+    if (dialogOpened.value === false) {
+        dialogRef.value.showModal()
+        dialogOpened.value = true
+    } else {
+        dialogRef.value.close()
+        dialogOpened.value = false
+    }
+}
+
+function closeModal(event) {
+    if (!event.target.contains(dialogRef.value)) return;
+    dialogRef.value.close()
+}
 
 /**
  * Fetch file names from backend.
@@ -22,9 +39,10 @@ onBeforeMount(() => {
 <template>
     <div class="image-container">
         <div v-for="fileId in fileIds" class="image-preview-box">
-            <img :src="`http://localhost:3000/images/${fileId}`" />
+            <img :src="`http://localhost:3000/images/${fileId}`" @click="toggleDialog(fileId)" />
         </div>
     </div>
+    <dialog class="dialog-box" ref="dialog" @click="closeModal">Moin</dialog>
 </template>
 
 <style>
@@ -48,6 +66,14 @@ onBeforeMount(() => {
     object-fit: cover;
     width: 100%;
     height: 100%;
+}
+
+.dialog-box {
+    padding: 0;
+}
+
+.dialog-box::backdrop {
+    background-color: rgba(148, 148, 148, 0.25);
 }
 
 </style>

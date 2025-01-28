@@ -223,33 +223,37 @@ function reorderRoleArray(role) {
     </div>
     <div class="table-container">
         <table class="table-layout">
-            <tr class="table-header">
-                <td>ID</td>
-                <td>E-Mails</td>
-                <td>Name</td>
-                <td>Rolle</td>
-                <td>Aktion</td>
-            </tr>
-            <tr v-for="(user, idx) in users">
-                <td>{{ user.id }}</td>
-                <td>{{ user.email }}</td>
-                <td>
-                    <input @input="unsavedChanges = true" type="text" :id="'user-name-' + idx" v-model="user.name" readonly />
-                </td>
-                <td>
-                    <select @input="unsavedChanges = true" name="roles" :id="'select-roles-' + idx" disabled="true" style="color: black;">
-                        <option v-for="role in reorderRoleArray(user.role)">
-                            {{ role }}
-                        </option>
-                    </select>
-                </td>
-                <td>
-                    <img :id="'edit-button-' + idx" @click="editToggle(idx)" src="../../../public/edit-icon-png-3602.png" width="20px" height="20px">
-                    <img :id="'close-button-' + idx" @click="editToggle(idx)" src="../../../public/211652_close_icon.png" width="20px" height="20px" style="display: none;">
-                    <img :id="'delete-button-' + idx" @click="{showModalDeleteUser = true; userToDelete = user.id}" src="../../../public/pngwing.com.png" width="20px" height="20px">
-                    <img :id="'save-button-' + idx" @click="saveUserChanges(idx, user.id)" src="../../../public/save.256x256.png" width="20px" height="20px" style="display: none;">
-                </td>
-            </tr>
+            <thead>
+                <tr class="table-header">
+                    <td>ID</td>
+                    <td>E-Mails</td>
+                    <td>Name</td>
+                    <td>Rolle</td>
+                    <td>Aktion</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(user, idx) in users">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <input @input="unsavedChanges = true" type="text" :id="'user-name-' + idx" v-model="user.name" readonly />
+                    </td>
+                    <td>
+                        <select @input="unsavedChanges = true" name="roles" :id="'select-roles-' + idx" disabled="true" style="color: black;">
+                            <option v-for="role in reorderRoleArray(user.role)">
+                                {{ role }}
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <img :id="'edit-button-' + idx" @click="editToggle(idx)" src="../../../public/edit-icon-png-3602.png" width="20px" height="20px">
+                        <img :id="'close-button-' + idx" @click="editToggle(idx)" src="../../../public/211652_close_icon.png" width="20px" height="20px" style="display: none;">
+                        <img :id="'delete-button-' + idx" @click="{showModalDeleteUser = true; userToDelete = user.id}" src="../../../public/pngwing.com.png" width="20px" height="20px">
+                        <img :id="'save-button-' + idx" @click="saveUserChanges(idx, user.id)" src="../../../public/save.256x256.png" width="20px" height="20px" style="display: none;">
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <div class="table-title">
@@ -257,13 +261,15 @@ function reorderRoleArray(role) {
     </div>
     <div class="table-container">
         <table class="table-layout">
-            <tr class="table-header">
-                <td>ID</td>
-                <td>Nutzer</td>
-                <td>Beschreibung</td>
-                <td>Link</td>
-                <td>Aktion</td>
-            </tr>
+            <thead>
+                <tr class="table-header">
+                    <td>ID</td>
+                    <td>Nutzer</td>
+                    <td>Beschreibung</td>
+                    <td>Link</td>
+                    <td>Aktion</td>
+                </tr>
+            </thead>
         </table>
     </div>
     <ModalDialogButton
