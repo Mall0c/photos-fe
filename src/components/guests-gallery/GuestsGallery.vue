@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed, onBeforeMount, useTemplateRef } from 'vue';
+import CommentArea from '@/components/photo-overview/CommentArea.vue';
 
 const imageIds = ref(null)
 const error = ref(null)
 const dialogRef = useTemplateRef("dialog")
 const dialogOpened = ref(false)
+
 const currentImageIdInDialog = ref(null)
 
 /**
@@ -54,18 +56,20 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <div class="image-container">
+    <div v-if="imageIds" class="image-container">
         <div v-for="imageId in imageIds" class="image-preview-box">
             <img :src="`http://localhost:3000/images/scaled/${imageId}`" @click="openDialog(imageId)" />
         </div>
     </div>
     <dialog class="dialog-element" ref="dialog" @click="closeDialog">
-        <div class="dialog-container">
-            <div v-if="currentImageIdInDialog" class="dialog-container-picture">
+        <div v-if="currentImageIdInDialog" class="dialog-container">
+            <div class="dialog-container-picture">
                 <img :src="`http://localhost:3000/images/${currentImageIdInDialog}`">
             </div>
             <div class="dialog-description">
-                Bla
+                <KeepAlive>
+                    <CommentArea :key="currentImageIdInDialog" :file="currentImageIdInDialog" />
+                </KeepAlive>
             </div>
         </div>
     </dialog>
@@ -95,12 +99,8 @@ onBeforeMount(() => {
 }
 
 .dialog-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     padding: none;
     border: none;
-    height: 90vh;
     min-width: 30vw;
     background-color: rgba(148, 148, 148, 0.9);
 }
@@ -115,13 +115,23 @@ onBeforeMount(() => {
 }
 
 .dialog-container-picture {
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    width: 50vw;
+    height: 50vh;
 }
 
 .dialog-container-picture img {
     object-fit: cover;
-    max-width: 800px;
-    max-height: 400px;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.dialog-description {
+    width: 100%;
+    padding: 20px;
 }
 
 </style>

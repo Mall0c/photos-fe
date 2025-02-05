@@ -2,14 +2,17 @@
 import { ref, computed, onBeforeMount } from 'vue';
 import CommentArea from './CommentArea.vue'
 
-const fileIds = ref(null)
+// This contains the image ids that are used in the database.
+const imageIds = ref(null)
 const error = ref(null)
 const pageNumber = ref(0)
+
+// This value starts at 0. It says, which image is currently shown.
 const currentImageNumber = ref(0)
 const imgPerPage = 5
 
-const currentFilename = computed(() => {
-    return fileIds.value[currentImageNumber.value]
+const currentImage = computed(() => {
+    return imageIds.value[currentImageNumber.value]
 })
 
 /**
@@ -55,30 +58,30 @@ function alterPageNumber(val) {
 /**
  * Fetch file names from backend.
  */
-function fetchFileIds() {
+function fetchimageIds() {
     fetch("http://localhost:3000/images")
         .then(res => res.json())
-        .then(res => fileIds.value = res)
+        .then(res => imageIds.value = res)
         .catch(err => error.value = err)
 }
 
 onBeforeMount(() => {
-    fetchFileIds()
+    fetchimageIds()
 })
 </script>
 
 <template>
-    <div v-if="fileIds" class="main-container">
+    <div v-if="imageIds" class="main-container">
         <div class="interaction-container">
             <div class="slide-image-arrow col-1">
                 <div @click="alterCurrentImage(-1)">&#8592;</div>
             </div>
             <div class="big-photo-container col-7">
-                <img :src="`http://localhost:3000/images/${fileIds[currentImageNumber]}`" />
+                <img :src="`http://localhost:3000/images/${imageIds[currentImageNumber]}`" />
             </div>
             <div class="image-info-container col-3">
                 <KeepAlive>
-                    <CommentArea :key="currentFilename" :file="currentFilename"/>
+                    <CommentArea :key="currentImage" :file="currentImage"/>
                 </KeepAlive>
             </div>
             <div class="slide-image-arrow col-1">
@@ -87,7 +90,7 @@ onBeforeMount(() => {
         </div>
         <div class="photo-slide-container">
             <div 
-                v-for="(file, idx) in fileIds.slice(pageNumber * imgPerPage, (pageNumber + 1) * imgPerPage)" 
+                v-for="(file, idx) in imageIds.slice(pageNumber * imgPerPage, (pageNumber + 1) * imgPerPage)" 
                 class="photo-preview"
             >
                 <img :src="`http://localhost:3000/images/scaled/${file}`" @click="currentImageNumber = (pageNumber * imgPerPage) + idx" />
@@ -100,7 +103,7 @@ onBeforeMount(() => {
             | 
             <!-- Stop pagination after all images were shown. -->
             <span
-                v-if="Math.floor(fileIds.length / imgPerPage) > pageNumber"
+                v-if="Math.floor(imageIds.length / imgPerPage) > pageNumber"
                 @click="alterPageNumber(1)"
             >
                 Nächste Seite
@@ -148,7 +151,8 @@ onBeforeMount(() => {
 
     .image-info-container {
         height: 55vh;
-        border: 1px solid rgb(0, 4, 255);
+        border: 1px solid black;
+        overflow-y: scroll;
     }
 }
 
