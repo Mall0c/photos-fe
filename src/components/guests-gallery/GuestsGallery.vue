@@ -57,7 +57,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <UploadImage />
+    <UploadImage imageType="1"/>
     <div v-if="imageIds" class="image-container">
         <div v-for="imageId in imageIds" class="image-preview-box">
             <img :src="`http://localhost:3000/images/scaled/${imageId}`" @click="openDialog(imageId)" />

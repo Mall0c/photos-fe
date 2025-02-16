@@ -2,15 +2,17 @@
 import { useAuthStore } from '@/stores/auth.store';
 import { ref, useTemplateRef } from "vue"
 
+const props = defineProps(['imageType'])
+
 const authStore = useAuthStore()
 const jwtToken = authStore.token
 const fileInput = useTemplateRef("fileInput")
 
 function upload() {
-    console.log("Hier 1")
     const formData = new FormData()
     formData.append('image', fileInput.value.files[0])
-    console.log("Hier 2")
+    formData.append('type', props.imageType)
+    formData.append('description', "Moin")
     fetch(`http://localhost:3000/images-by-guests`, 
         {
             method: "POST",
@@ -22,7 +24,6 @@ function upload() {
     )
         .then(e => console.log("then"))
         .catch(e => console.log("catch"))
-    console.log("Hier 3")
 }
 
 </script>
