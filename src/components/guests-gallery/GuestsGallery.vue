@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onBeforeMount, useTemplateRef } from 'vue';
 import CommentArea from '@/components/photo-overview/CommentArea.vue';
+import UploadImage from '@/components/photo-overview/UploadImage.vue';
 
 const imageIds = ref(null)
 const error = ref(null)
@@ -56,6 +57,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
+    <UploadImage />
     <div v-if="imageIds" class="image-container">
         <div v-for="imageId in imageIds" class="image-preview-box">
             <img :src="`http://localhost:3000/images/scaled/${imageId}`" @click="openDialog(imageId)" />
