@@ -29,8 +29,8 @@ function upload() {
 </script>
 
 <template>
-        <input ref="fileInput" type="file" />
-        <button @click="upload">Upload file</button>
+    <input ref="fileInput" type="file" />
+    <button @click="upload">Upload file</button>
 </template>
 
 <style>

@@ -5,28 +5,41 @@ import UploadImage from '@/components/photo-overview/UploadImage.vue';
 
 const imageIds = ref(null)
 const error = ref(null)
-const dialogRef = useTemplateRef("dialog")
-const dialogOpened = ref(false)
-
+const imageDetailDialogRef = useTemplateRef("image-detail-dialog")
+const imageDetailDialogOpened = ref(false)
 const currentImageIdInDialog = ref(null)
+
+const imageUploadDialogRef = useTemplateRef("image-upload-dialog")
+const imageUploadDialogOpened = ref(false)
 
 /**
  * Open the dialog for a picture, that shows the picture in bigger resolution,
  * as well as more information like description, comments, uploader, etc.
  */
-function openDialog(imageId) {
-    if (dialogOpened.value === false) {
-        dialogRef.value.showModal()
-        dialogOpened.value = true
+function openImageDetailDialog(imageId) {
+    if (imageDetailDialogOpened.value === false) {
+        imageDetailDialogRef.value.showModal()
+        imageDetailDialogOpened.value = true
         currentImageIdInDialog.value = imageId
+    }
+}
+
+/**
+ * Open the dialog for a picture, that shows the picture in bigger resolution,
+ * as well as more information like description, comments, uploader, etc.
+ */
+function openImageUploadDialog() {
+    if (imageUploadDialogOpened.value === false) {
+        imageUploadDialogRef.value.showModal()
+        imageUploadDialogOpened.value = true
     }
 }
 
 /**
  * Close the dialog when the user clicks outside the dialog (on the backdrop)
  */
-function closeDialog(event) {
-    const rect = dialogRef.value.getBoundingClientRect();
+function closeImageDetailView(event) {
+    const rect = imageDetailDialogRef.value.getBoundingClientRect();
     if (
         rect.top <= event.clientY 
         && event.clientY <= rect.top + rect.height 
@@ -35,9 +48,27 @@ function closeDialog(event) {
     ) {
         // Do nothing
     } else {
-        dialogRef.value.close()
-        dialogOpened.value = false
+        imageDetailDialogRef.value.close()
+        imageDetailDialogOpened.value = false
         currentImageIdInDialog.value = null
+    }
+}
+
+/**
+ * Close the dialog when the user clicks outside the dialog (on the backdrop)
+ */
+function closeImageUploadView(event) {
+    const rect = imageUploadDialogRef.value.getBoundingClientRect();
+    if (
+        rect.top <= event.clientY 
+        && event.clientY <= rect.top + rect.height 
+        && rect.left <= event.clientX 
+        && event.clientX <= rect.left + rect.width
+    ) {
+        // Do nothing
+    } else {
+        imageUploadDialogRef.value.close()
+        imageUploadDialogOpened.value = false
     }
 }
 
@@ -57,18 +88,27 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <UploadImage imageType="1"/>
-    <div v-if="imageIds" class="image-container">
-        <div v-for="imageId in imageIds" class="image-preview-box">
-            <img :src="`http://localhost:3000/images/scaled/${imageId}`" @click="openDialog(imageId)" />
+    <!-- Image upload -->
+    <b @click="openImageUploadDialog">Upload image</b>
+    <dialog class="image-detail-view-container" ref="image-upload-dialog" @click="closeImageUploadView">
+        <div class="image-detail-view-element">
+            <UploadImage imageType="1"/>
+        </div>
+    </dialog>
+    <div class="content">
+        <div v-if="imageIds" class="image-container">
+            <div v-for="imageId in imageIds" class="image-preview-box">
+                <img :src="`http://localhost:3000/images/scaled/${imageId}`" @click="openImageDetailDialog(imageId)" />
+            </div>
         </div>
     </div>
-    <dialog class="dialog-element" ref="dialog" @click="closeDialog">
-        <div v-if="currentImageIdInDialog" class="dialog-container">
-            <div class="dialog-container-picture">
+    <!-- Image detail view -->
+    <dialog class="image-detail-view-container" ref="image-detail-dialog" @click="closeImageDetailView">
+        <div v-if="currentImageIdInDialog" class="image-detail-view-element">
+            <div class="image-detail-view">
                 <img :src="`http://localhost:3000/images/${currentImageIdInDialog}`">
             </div>
-            <div class="dialog-description">
+            <div class="image-description">
                 <KeepAlive>
                     <CommentArea :key="currentImageIdInDialog" :file="currentImageIdInDialog" />
                 </KeepAlive>
@@ -79,19 +119,26 @@ onBeforeMount(() => {
 
 <style>
 
+.content {
+    display: flex;
+    justify-content: center;
+}
+
 .image-container {
+    width: 80%;
     margin-top: 5vh;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: flex-start;
 }
 
 .image-preview-box {
     margin-left: 5vw;
     margin-right: 5vw;
     margin-bottom: 5vh;
-    width: 25vh;
-    height: 25vh;
+    width: 200px;
+    height: 200px;
 }
 
 .image-preview-box img {
@@ -100,23 +147,23 @@ onBeforeMount(() => {
     height: 100%;
 }
 
-.dialog-container {
+.image-detail-view-element {
     padding: none;
     border: none;
     min-width: 30vw;
     background-color: rgba(148, 148, 148, 0.9);
 }
 
-.dialog-element {
+.image-detail-view-container {
     padding: 0;
     border: 0;
 }
 
-.dialog-container::backdrop {
+.image-detail-view-container::backdrop {
     background-color: rgba(148, 148, 148, 0.25);
 }
 
-.dialog-container-picture {
+.image-detail-view {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,13 +172,13 @@ onBeforeMount(() => {
     height: 50vh;
 }
 
-.dialog-container-picture img {
+.image-detail-view img {
     object-fit: cover;
     max-width: 90%;
     max-height: 90%;
 }
 
-.dialog-description {
+.image-description {
     width: 100%;
     padding: 20px;
 }
