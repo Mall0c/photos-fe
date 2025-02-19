@@ -146,7 +146,6 @@ li a:hover:not(.active) {
 }
 
 .textarea-input {
-    background-color: grey;
     border-radius: 5px;
     padding: 5px;
     width: 80%;

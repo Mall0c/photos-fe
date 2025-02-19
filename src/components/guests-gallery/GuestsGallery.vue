@@ -89,13 +89,15 @@ onBeforeMount(() => {
 
 <template>
     <!-- Image upload -->
-    <b @click="openImageUploadDialog">Upload image</b>
     <dialog class="image-detail-view-container" ref="image-upload-dialog" @click="closeImageUploadView">
         <div class="image-detail-view-element">
             <UploadImage imageType="1"/>
         </div>
     </dialog>
     <div class="content">
+        <div class="image-upload-btn-container">
+            <b @click="openImageUploadDialog">Upload image</b>
+        </div>
         <div v-if="imageIds" class="image-container">
             <div v-for="imageId in imageIds" class="image-preview-box">
                 <img :src="`http://localhost:3000/images/scaled/${imageId}`" @click="openImageDetailDialog(imageId)" />
@@ -121,7 +123,8 @@ onBeforeMount(() => {
 
 .content {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .image-container {
@@ -130,7 +133,6 @@ onBeforeMount(() => {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: flex-start;
 }
 
 .image-preview-box {
@@ -151,7 +153,6 @@ onBeforeMount(() => {
     padding: none;
     border: none;
     min-width: 30vw;
-    background-color: rgba(148, 148, 148, 0.9);
 }
 
 .image-detail-view-container {
@@ -181,6 +182,11 @@ onBeforeMount(() => {
 .image-description {
     width: 100%;
     padding: 20px;
+}
+
+.image-upload-btn-container {
+    display: flex;
+    text-align: center;
 }
 
 </style>
