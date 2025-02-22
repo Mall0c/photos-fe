@@ -103,8 +103,11 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 100%;
     overflow: auto;
+}
+
+li {
+    display: inline-block;
 }
 
 li a {

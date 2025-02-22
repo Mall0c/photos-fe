@@ -13,32 +13,35 @@ function onCloseNotification() {
 </script>
 
 <template>
-    <div class="notification-center">
-        <Notification v-if="currentError" :notificationData="currentError" @closeNotification="onCloseNotification"></Notification>
-    </div>
-    <div class="nav-container col-2">
-        <Navigation></Navigation>
-    </div>
-    <div class="overall-container col-10">
-        <router-view v-slot="{ Component }">
-            <component :is="Component" />
-        </router-view>
+    <div class="mother-container">
+        <div class="notification-center">
+            <Notification v-if="currentError" :notificationData="currentError" @closeNotification="onCloseNotification"></Notification>
+        </div>
+        <div class="nav-container">
+            <Navigation></Navigation>
+        </div>
+        <div class="overall-container col-10">
+            <router-view v-slot="{ Component }">
+                <component :is="Component" />
+            </router-view>
+        </div>
     </div>
 </template>
 
 <style>
 
 .notification-center {
-    display: flex;
-    justify-content: center;
+
 }
 
 .nav-container {
-    background-color: rgb(226, 226, 226);
+    padding: 25px 0px 25px 0px;
 }
 
-.overall-container {
-    float: left;
+.mother-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .overall-container::after {

@@ -1,6 +1,8 @@
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue';
+import { ref, computed, onBeforeMount, useTemplateRef } from 'vue';
 import CommentArea from './CommentArea.vue'
+import { useAuthStore } from '@/stores/auth.store';
+import UploadImage from '@/components/photo-overview/UploadImage.vue';
 
 // This contains the image ids that are used in the database.
 const imageIds = ref(null)
@@ -10,6 +12,9 @@ const pageNumber = ref(0)
 // This value starts at 0. It says, which image is currently shown.
 const currentImageNumber = ref(0)
 const imgPerPage = 5
+const uploadImageComponent = useTemplateRef("uploadImageComponent")
+
+const authStore = useAuthStore()
 
 const currentImage = computed(() => {
     return imageIds.value[currentImageNumber.value]
@@ -71,23 +76,28 @@ onBeforeMount(() => {
 </script>
 
 <template>
+    <!-- Image upload -->
+    <UploadImage imageType="0" ref="uploadImageComponent"/>
+    <!-- Main content -->
     <div v-if="imageIds" class="main-container">
+        <!-- Big photo + comments -->
         <div class="interaction-container">
-            <div class="slide-image-arrow col-1">
+            <div class="slide-image-arrow noselect col-1">
                 <div @click="alterCurrentImage(-1)">&#8592;</div>
             </div>
             <div class="big-photo-container col-7">
                 <img :src="`http://localhost:3000/images/${imageIds[currentImageNumber]}`" />
+            </div>
+            <div class="slide-image-arrow noselect col-1">
+                <div @click="alterCurrentImage(1)">&#8594;</div>
             </div>
             <div class="image-info-container col-3">
                 <KeepAlive>
                     <CommentArea :key="currentImage" :file="currentImage"/>
                 </KeepAlive>
             </div>
-            <div class="slide-image-arrow col-1">
-                <div @click="alterCurrentImage(1)">&#8594;</div>
-            </div>
         </div>
+        <!-- Photo slides on the bottom -->
         <div class="photo-slide-container">
             <div 
                 v-for="(file, idx) in imageIds.slice(pageNumber * imgPerPage, (pageNumber + 1) * imgPerPage)" 
@@ -96,19 +106,24 @@ onBeforeMount(() => {
                 <img :src="`http://localhost:3000/images/scaled/${file}`" @click="currentImageNumber = (pageNumber * imgPerPage) + idx" />
             </div>
         </div>
+        <!-- Pagination + image upload -->
         <div class="pagination-text noselect">
             <span @click="alterPageNumber(-1)">
                 Vorherige Seite
             </span>
-            | 
             <!-- Stop pagination after all images were shown. -->
             <span
                 v-if="Math.floor(imageIds.length / imgPerPage) > pageNumber"
                 @click="alterPageNumber(1)"
             >
-                Nächste Seite
+                &nbsp;| Nächste Seite
             </span>
-            &nbsp;{{ pageNumber + 1 }}
+        </div>
+        <div class="pagination-text">
+            Seite {{ pageNumber + 1 }} / {{Math.ceil(imageIds.length / imgPerPage)}}
+        </div>
+        <div v-if="authStore.isAdmin" class="image-upload-btn-container">
+            <b @click="uploadImageComponent.openImageUploadDialog">Bild hochladen</b>
         </div>
     </div>
     <div v-else-if="error">

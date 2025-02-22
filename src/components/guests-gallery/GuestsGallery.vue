@@ -6,11 +6,9 @@ import UploadImage from '@/components/photo-overview/UploadImage.vue';
 const imageIds = ref(null)
 const error = ref(null)
 const imageDetailDialogRef = useTemplateRef("image-detail-dialog")
+const uploadImageComponent = useTemplateRef("uploadImageComponent")
 const imageDetailDialogOpened = ref(false)
 const currentImageIdInDialog = ref(null)
-
-const imageUploadDialogRef = useTemplateRef("image-upload-dialog")
-const imageUploadDialogOpened = ref(false)
 
 /**
  * Open the dialog for a picture, that shows the picture in bigger resolution,
@@ -21,17 +19,6 @@ function openImageDetailDialog(imageId) {
         imageDetailDialogRef.value.showModal()
         imageDetailDialogOpened.value = true
         currentImageIdInDialog.value = imageId
-    }
-}
-
-/**
- * Open the dialog for a picture, that shows the picture in bigger resolution,
- * as well as more information like description, comments, uploader, etc.
- */
-function openImageUploadDialog() {
-    if (imageUploadDialogOpened.value === false) {
-        imageUploadDialogRef.value.showModal()
-        imageUploadDialogOpened.value = true
     }
 }
 
@@ -55,24 +42,6 @@ function closeImageDetailView(event) {
 }
 
 /**
- * Close the dialog when the user clicks outside the dialog (on the backdrop)
- */
-function closeImageUploadView(event) {
-    const rect = imageUploadDialogRef.value.getBoundingClientRect();
-    if (
-        rect.top <= event.clientY 
-        && event.clientY <= rect.top + rect.height 
-        && rect.left <= event.clientX 
-        && event.clientX <= rect.left + rect.width
-    ) {
-        // Do nothing
-    } else {
-        imageUploadDialogRef.value.close()
-        imageUploadDialogOpened.value = false
-    }
-}
-
-/**
  * Fetch file names from backend.
  */
 function fetchImageIds() {
@@ -89,14 +58,11 @@ onBeforeMount(() => {
 
 <template>
     <!-- Image upload -->
-    <dialog class="image-detail-view-container" ref="image-upload-dialog" @click="closeImageUploadView">
-        <div class="image-detail-view-element">
-            <UploadImage imageType="1"/>
-        </div>
-    </dialog>
+    <UploadImage imageType="1" ref="uploadImageComponent"/>
+    <!-- Main content -->
     <div class="content">
         <div class="image-upload-btn-container">
-            <b @click="openImageUploadDialog">Upload image</b>
+            <b @click="uploadImageComponent.openImageUploadDialog">Bild hochladen</b>
         </div>
         <div v-if="imageIds" class="image-container">
             <div v-for="imageId in imageIds" class="image-preview-box">
@@ -182,11 +148,6 @@ onBeforeMount(() => {
 .image-description {
     width: 100%;
     padding: 20px;
-}
-
-.image-upload-btn-container {
-    display: flex;
-    text-align: center;
 }
 
 </style>
