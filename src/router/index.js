@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import PhotoOverview from '@/components/photo-overview/PhotoOverview.vue';
-import About from '@/components/about/About.vue';
 import Home from '@/components/home/Home.vue'
 import Register from '@/components/user/Register.vue'
 import Profile from '@/components/profile/Profile.vue'
@@ -16,7 +15,6 @@ export const router = createRouter({
         { path: '/', redirect: '/home' },
         { path: '/home', component: Home },
         { path: '/gallery', component: PhotoOverview },
-        { path: '/about', component: About },
         { path: '/register', component: Register },
         { path: '/logout', component: Register },
         { path: '/profile', component: Profile },

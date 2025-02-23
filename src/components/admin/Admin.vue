@@ -4,6 +4,7 @@ import { useErrorStore } from '@/stores/errors.store';
 import { useAuthStore, ROLES } from '@/stores/auth.store';
 import { onBeforeRouteLeave, useRouter } from 'vue-router';
 import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
+import Table from '@/components/utilities/Table.vue';
 
 const router = useRouter()
 
@@ -218,60 +219,39 @@ function reorderRoleArray(role) {
 </script>
 
 <template>
-    <div class="table-title">
-        Registrierte Nutzer
-    </div>
-    <div class="table-container">
-        <table class="table-layout">
-            <thead>
-                <tr class="table-header">
-                    <td>ID</td>
-                    <td>E-Mails</td>
-                    <td>Name</td>
-                    <td>Rolle</td>
-                    <td>Aktion</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(user, idx) in users">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
-                        <input @input="unsavedChanges = true" type="text" :id="'user-name-' + idx" v-model="user.name" readonly />
-                    </td>
-                    <td>
-                        <select @input="unsavedChanges = true" name="roles" :id="'select-roles-' + idx" disabled="true" style="color: black;">
-                            <option v-for="role in reorderRoleArray(user.role)">
-                                {{ role }}
-                            </option>
-                        </select>
-                    </td>
-                    <td>
-                        <img :id="'edit-button-' + idx" @click="editToggle(idx)" src="../../../public/edit-icon-png-3602.png" width="20px" height="20px">
-                        <img :id="'close-button-' + idx" @click="editToggle(idx)" src="../../../public/211652_close_icon.png" width="20px" height="20px" style="display: none;">
-                        <img :id="'delete-button-' + idx" @click="{showModalDeleteUser = true; userToDelete = user.id}" src="../../../public/pngwing.com.png" width="20px" height="20px">
-                        <img :id="'save-button-' + idx" @click="saveUserChanges(idx, user.id)" src="../../../public/save.256x256.png" width="20px" height="20px" style="display: none;">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="table-title">
-        Von Nutzern hochgeladene Bilder
-    </div>
-    <div class="table-container">
-        <table class="table-layout">
-            <thead>
-                <tr class="table-header">
-                    <td>ID</td>
-                    <td>Nutzer</td>
-                    <td>Beschreibung</td>
-                    <td>Link</td>
-                    <td>Aktion</td>
-                </tr>
-            </thead>
-        </table>
-    </div>
+    
+    <Table 
+        tableTitle="Registrierte Nutzer"
+        tableColumns='["ID", "E-Mails", "Name", "Rolle", "Aktion"]'
+    >
+        <tr v-for="(user, idx) in users">
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                <input @input="unsavedChanges = true" type="text" :id="'user-name-' + idx" v-model="user.name" readonly />
+            </td>
+            <td>
+                <select @input="unsavedChanges = true" name="roles" :id="'select-roles-' + idx" disabled="true" style="color: black;">
+                    <option v-for="role in reorderRoleArray(user.role)">
+                        {{ role }}
+                    </option>
+                </select>
+            </td>
+            <td>
+                <img :id="'edit-button-' + idx" @click="editToggle(idx)" src="../../../public/edit-icon-png-3602.png" width="20px" height="20px">
+                <img :id="'close-button-' + idx" @click="editToggle(idx)" src="../../../public/211652_close_icon.png" width="20px" height="20px" style="display: none;">
+                <img :id="'delete-button-' + idx" @click="{showModalDeleteUser = true; userToDelete = user.id}" src="../../../public/pngwing.com.png" width="20px" height="20px">
+                <img :id="'save-button-' + idx" @click="saveUserChanges(idx, user.id)" src="../../../public/save.256x256.png" width="20px" height="20px" style="display: none;">
+            </td>
+        </tr>
+    </Table>
+
+    <Table
+        tableTitle="Von Nutzern hochgeladene Bilder"
+        tableColumns='["ID", "Nutzer", "Beschreibung", "Link", "Aktion"]'
+    >
+    </Table>
+
     <ModalDialogButton
         v-if="showModalDeleteUser"
         ref="modalDialogDeleteUser"
@@ -284,40 +264,8 @@ function reorderRoleArray(role) {
 
 <style>
 
-.table-header {
-    background: #04AA6D;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
 .edit-highlight {
     border: 1px solid blue;
-}
-
-.table-container {
-    margin: 20px;
-}
-
-.table-title {
-    font-weight: bold;
-    margin: 20px;
-}
-
-.table-layout {
-    width: 100%;
-    word-wrap: break-word;
-    border-collapse: collapse;
-}
-
-/** Makes every second row slightly more gray. */
-.table-container tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-}
-
-/** Makes every second row slightly more gray. */
-.table-container tr:last-of-type {
-    border-bottom: 2px solid #04AA6D;
 }
 
 </style>
