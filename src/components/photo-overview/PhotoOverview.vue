@@ -1,12 +1,17 @@
 <script setup>
-import { ref, computed, onBeforeMount, useTemplateRef } from 'vue';
+import { ref, computed, onBeforeMount, useTemplateRef, watch } from 'vue';
 import CommentArea from './CommentArea.vue'
 import { useAuthStore } from '@/stores/auth.store';
 import UploadImage from '@/components/photo-overview/UploadImage.vue';
+import { useRoute, useRouter } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
 
 // This contains the image ids that are used in the database.
 const imageIds = ref(null)
 const error = ref(null)
+// Page number is zero-based, but for the user, it is shown as pageNumber + 1.
 const pageNumber = ref(0)
 
 // This value starts at 0. It says, which image is currently shown.
@@ -63,16 +68,36 @@ function alterPageNumber(val) {
 /**
  * Fetch file names from backend.
  */
-function fetchimageIds() {
+function fetchImageIds() {
     fetch("http://localhost:3000/images")
         .then(res => res.json())
-        .then(res => imageIds.value = res)
+        .then(res => { 
+            imageIds.value = res
+            // Once the images are downloaded, check if the provided img id in the route params exists.
+            // If yes, navigate to it. If no, navigate to the first image.
+            if (route.params.imgId !== "") {
+                const imageIndex = imageIds.value.indexOf(parseInt(route.params.imgId))
+                if (imageIndex > -1) {
+                    currentImageNumber.value = imageIndex
+                    // Set the page number.
+                    pageNumber.value = Math.floor((imageIndex / imgPerPage))
+                } else {
+                    currentImageNumber.value = 0
+                    router.replace(`/gallery/${imageIds.value[currentImageNumber.value]}`)
+                }
+            }
+        })
         .catch(err => error.value = err)
 }
 
 onBeforeMount(() => {
-    fetchimageIds()
+    fetchImageIds()
 })
+
+watch(currentImageNumber, (newVal, oldVal) => {
+    router.replace(`/gallery/${imageIds.value[currentImageNumber.value]}`)
+})
+
 </script>
 
 <template>

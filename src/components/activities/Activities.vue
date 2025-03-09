@@ -1,11 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import Table from '@/components/utilities/Table.vue';
+import { formatTimestamp } from '@/utils'
 
 const error = ref(null)
 const activities = ref({
-    "owner-gallery": [],
-    "guest-gallery": [],
+    "ownerGallery": [],
+    "guestGallery": [],
     "comments": []
 })
 
@@ -20,14 +21,13 @@ function fetchActivities(type) {
 }
 
 onMounted(() => {
-    fetchActivities("owner-gallery")
-    fetchActivities("guest-gallery")
+    fetchActivities("ownerGallery")
+    fetchActivities("guestGallery")
     fetchActivities("comments")
 })
 </script>
 
 <template>
-Aktivitäten
 
     <!-- Kommentare -->
     <Table
@@ -35,15 +35,35 @@ Aktivitäten
         tableColumns='["Uhrzeit", "Autor", "Kommentar"]'
     >
         <tr v-for="comment in activities.comments">
-            <td>{{ comment.commented_at }}</td>
+            <td>{{ formatTimestamp(comment.commented_at) }}</td>
             <td>{{ comment.users_id }}</td>
             <td>{{ comment.comment }}</td>
         </tr>
     </Table>
 
     <!-- Gästebilder -->
+    <Table
+        tableTitle="Neuste Gästebilder"
+        tableColumns='["Uhrzeit", "Autor", "Beschreibung"]'
+    >
+        <tr v-for="image in activities.guestGallery">
+            <td>{{ formatTimestamp(image.uploaded_at) }}</td>
+            <td>{{ image.username }}</td>
+            <td>{{ image.description }}</td>
+        </tr>
+    </Table>
 
     <!-- Adminbilder -->
+    <Table
+        tableTitle="Neuste Bilder, die das Brautpaar hochgeladen hat"
+        tableColumns='["Uhrzeit", "Beschreibung", "Link"]'
+    >
+        <tr v-for="image in activities.ownerGallery">
+            <td>{{ formatTimestamp(image.uploaded_at) }}</td>
+            <td>{{ image.description }}</td>
+            <td><router-link :to="'/gallery/' + image.id">Bild anschauen</router-link></td>
+        </tr>
+    </Table>
 
 </template>
 

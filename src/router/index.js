@@ -14,7 +14,8 @@ export const router = createRouter({
     routes: [
         { path: '/', redirect: '/home' },
         { path: '/home', component: Home },
-        { path: '/gallery', component: PhotoOverview },
+        // Question mark allows param to be optional. https://stackoverflow.com/a/47828416
+        { path: '/gallery/:imgId?', component: PhotoOverview },
         { path: '/register', component: Register },
         { path: '/logout', component: Register },
         { path: '/profile', component: Profile },
