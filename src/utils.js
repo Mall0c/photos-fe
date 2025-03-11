@@ -18,7 +18,7 @@ export function debounce(func, wait, immediate) {
 export function isAdminOrAuthor(authorId) {
     const authStore = useAuthStore()
     return authStore.isLoggedIn && (authStore.isAdmin || authStore.isOwner || authStore.userId == authorId)
-};
+}
 
 export function formatTimestamp(timestamp) {
     const date = new Date(parseInt(timestamp) * 1000);
@@ -33,4 +33,12 @@ export function formatTimestamp(timestamp) {
     const seconds = String(date.getSeconds()).padStart(2, '0');
   
     return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
-  }
+}
+
+export function getParentPath(route) {
+    console.log(route)
+    return route.path
+        .split('/')
+        .slice(0, -1)
+        .join('/')
+}

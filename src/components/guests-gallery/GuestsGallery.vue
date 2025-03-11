@@ -1,8 +1,12 @@
 <script setup>
-import { ref, computed, onBeforeMount, useTemplateRef } from 'vue';
+import { ref, computed, onBeforeMount, useTemplateRef, watch } from 'vue';
 import CommentArea from '@/components/photo-overview/CommentArea.vue';
 import UploadImage from '@/components/photo-overview/UploadImage.vue';
+import { useRoute, useRouter } from 'vue-router'
+import { getParentPath } from '@/utils'
 
+const route = useRoute()
+const router = useRouter()
 const imageIds = ref(null)
 const error = ref(null)
 const imageDetailDialogRef = useTemplateRef("image-detail-dialog")
@@ -47,13 +51,39 @@ function closeImageDetailView(event) {
 function fetchImageIds() {
     fetch("http://localhost:3000/images-by-guests")
         .then(res => res.json())
-        .then(res => imageIds.value = res)
+        .then(res => {
+            imageIds.value = res
+            console.log(route)
+            if (route.params.imgId !== "") {
+                const imageIndex = imageIds.value.indexOf(parseInt(route.params.imgId))
+                if (imageIndex > -1) {
+                    openImageDetailDialog(imageIds.value[imageIndex])
+                } else {
+                    const parentPath = route.fullPath
+                        .split('/')
+                        .slice(0, -1)
+                        .join('/')
+                    
+                    router.replace(parentPath)
+                }
+            }
+        })
         .catch(err => error.value = err)
 }
 
 onBeforeMount(() => {
     fetchImageIds()
 })
+
+watch(currentImageIdInDialog, (newVal, oldVal) => {
+    // TODO Remove hard coded path, and replace with utils.getParentPath()
+    let path = "/guests-gallery"
+    if (newVal !== null) {
+        path += "/" + currentImageIdInDialog.value
+    }
+    router.replace(path)
+})
+
 </script>
 
 <template>

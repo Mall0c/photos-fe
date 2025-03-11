@@ -95,6 +95,7 @@ onBeforeMount(() => {
 })
 
 watch(currentImageNumber, (newVal, oldVal) => {
+    // TODO Remove hard coded path, and replace with utils.getParentPath()
     router.replace(`/gallery/${imageIds.value[currentImageNumber.value]}`)
 })
 

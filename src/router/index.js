@@ -20,10 +20,10 @@ export const router = createRouter({
         { path: '/logout', component: Register },
         { path: '/profile', component: Profile },
         { path: '/activities', component: Activities },
-        { path: '/guests-gallery', component: GuestsGallery },
+        { path: '/guests-gallery/:imgId?', component: GuestsGallery },
         { path: '/admin', component: Admin },
         // catch all redirect to home page
-        { path: '/:pathMatch(.*)*', redirect: '/gallery' }
+        { path: '/:pathMatch(.*)*', redirect: '/home' }
     ]
 })
 

@@ -44,12 +44,13 @@ onMounted(() => {
     <!-- Gästebilder -->
     <Table
         tableTitle="Neuste Gästebilder"
-        tableColumns='["Uhrzeit", "Autor", "Beschreibung"]'
+        tableColumns='["Uhrzeit", "Autor", "Beschreibung", "Link"]'
     >
         <tr v-for="image in activities.guestGallery">
             <td>{{ formatTimestamp(image.uploaded_at) }}</td>
             <td>{{ image.username }}</td>
             <td>{{ image.description }}</td>
+            <td><router-link :to="'/guests-gallery/' + image.id">Bild anschauen</router-link></td>
         </tr>
     </Table>
 
