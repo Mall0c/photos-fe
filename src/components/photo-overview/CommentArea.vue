@@ -261,55 +261,55 @@ watch(currentImage, (newVal, oldVal) => {
 
 <style>
 
-.description-comment-container {
-    height: 100%;
-    overflow-y: scroll;
-}
+    .description-comment-container {
+        height: 100%;
+        overflow-y: scroll;
+    }
 
-.description {
-    margin-bottom: 15px;
-}
+    .description {
+        margin-bottom: 15px;
+    }
 
-.comment-container {
-    overflow-y: scroll;
-    margin-bottom: 15px;
-}
+    .comment-container {
+        overflow-y: scroll;
+        margin-bottom: 15px;
+    }
 
-.new-comment-container {
-    padding-top: 5px;
-    width: 100%;
-    height: 10%;
-    display: flex;
-}
+    .new-comment-container {
+        padding-top: 5px;
+        width: 100%;
+        height: 10%;
+        display: flex;
+    }
 
-.send-new-comment {
-    width: 20%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 45px;
-}
+    .send-new-comment {
+        width: 20%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 45px;
+    }
 
-.timestamp-buttons-container {
-    display: flex;
-}
+    .timestamp-buttons-container {
+        display: flex;
+    }
 
-.timestamp-info {
-    color: darkslategray;
-    width: 80%;
-    display: flex;
-}
+    .timestamp-info {
+        color: darkslategray;
+        width: 80%;
+        display: flex;
+    }
 
-.edit-delete-buttons {
-    width: 20%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
+    .edit-delete-buttons {
+        width: 20%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
 
-.collapse-expand-description-hint {
-    color: blue;
-}
+    .collapse-expand-description-hint {
+        color: blue;
+    }
 
 </style>

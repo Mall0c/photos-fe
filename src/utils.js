@@ -36,7 +36,6 @@ export function formatTimestamp(timestamp) {
 }
 
 export function getParentPath(route) {
-    console.log(route)
     return route.path
         .split('/')
         .slice(0, -1)

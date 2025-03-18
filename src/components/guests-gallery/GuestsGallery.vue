@@ -117,67 +117,67 @@ watch(currentImageIdInDialog, (newVal, oldVal) => {
 
 <style>
 
-.content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-.image-container {
-    width: 80%;
-    margin-top: 5vh;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-}
+    .image-container {
+        width: 80%;
+        margin-top: 5vh;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
 
-.image-preview-box {
-    margin-left: 5vw;
-    margin-right: 5vw;
-    margin-bottom: 5vh;
-    width: 200px;
-    height: 200px;
-}
+    .image-preview-box {
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-bottom: 5vh;
+        width: 23.33%;
+        height: 200px;
+    }
 
-.image-preview-box img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-}
+    .image-preview-box img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
 
-.image-detail-view-element {
-    padding: none;
-    border: none;
-    min-width: 30vw;
-}
+    .image-detail-view-element {
+        padding: none;
+        border: none;
+        min-width: 30vw;
+    }
 
-.image-detail-view-container {
-    padding: 0;
-    border: 0;
-}
+    .image-detail-view-container {
+        padding: 0;
+        border: 0;
+    }
 
-.image-detail-view-container::backdrop {
-    background-color: rgba(148, 148, 148, 0.25);
-}
+    .image-detail-view-container::backdrop {
+        background-color: rgba(148, 148, 148, 0.25);
+    }
 
-.image-detail-view {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: black;
-    width: 50vw;
-    height: 50vh;
-}
+    .image-detail-view {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
+        width: 50vw;
+        height: 50vh;
+    }
 
-.image-detail-view img {
-    object-fit: cover;
-    max-width: 90%;
-    max-height: 90%;
-}
+    .image-detail-view img {
+        object-fit: cover;
+        max-width: 90%;
+        max-height: 90%;
+    }
 
-.image-description {
-    width: 100%;
-    padding: 20px;
-}
+    .image-description {
+        width: 100%;
+        padding: 20px;
+    }
 
 </style>

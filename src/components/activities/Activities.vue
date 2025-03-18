@@ -20,6 +20,15 @@ function fetchActivities(type) {
         .catch(err => error.value = err)
 }
 
+function getPathToGallery(imgType) {
+    if (imgType === 0) {
+        return "/gallery/"
+    } else if (imgType === 1) {
+        return "/guests-gallery/"
+    }
+    return "/"
+}
+
 onMounted(() => {
     fetchActivities("ownerGallery")
     fetchActivities("guestGallery")
@@ -28,16 +37,16 @@ onMounted(() => {
 </script>
 
 <template>
-
     <!-- Kommentare -->
     <Table
         tableTitle="Neuste Kommentare"
-        tableColumns='["Uhrzeit", "Autor", "Kommentar"]'
+        tableColumns='["Uhrzeit", "Autor", "Kommentar", "Link"]'
     >
         <tr v-for="comment in activities.comments">
             <td>{{ formatTimestamp(comment.commented_at) }}</td>
             <td>{{ comment.users_id }}</td>
             <td>{{ comment.comment }}</td>
+            <td><router-link :to="getPathToGallery(comment.type) + comment.image_id">Bild anschauen</router-link></td>
         </tr>
     </Table>
 
@@ -65,7 +74,6 @@ onMounted(() => {
             <td><router-link :to="'/gallery/' + image.id">Bild anschauen</router-link></td>
         </tr>
     </Table>
-
 </template>
 
 <style>

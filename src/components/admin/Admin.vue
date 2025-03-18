@@ -264,8 +264,8 @@ function reorderRoleArray(role) {
 
 <style>
 
-.edit-highlight {
-    border: 1px solid blue;
-}
+    .edit-highlight {
+        border: 1px solid blue;
+    }
 
 </style>

@@ -162,93 +162,93 @@ watch(currentImageNumber, (newVal, oldVal) => {
 
 <style>
 
-@media only screen and (min-width: 768px) {
-    .interaction-container {
-        display: flex;
-        height: 70%;
-        justify-content: center;
-        align-items: center;
+    @media only screen and (min-width: 768px) {
+        .interaction-container {
+            display: flex;
+            height: 70%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .big-photo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .big-photo-container img {
+            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            max-width: 800px;
+            max-height: 500px;
+        }
+
+        .slide-image-arrow {
+            height: 100%;
+            font-size: 50px;
+        }
+
+        .image-info-container {
+            height: 55vh;
+            border: 1px solid black;
+            overflow-y: scroll;
+        }
     }
 
-    .big-photo-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
+    @media only screen and (max-width: 768px) {
+        .interaction-container {
+            height: 100%;
+        }
 
-    .big-photo-container img {
-        object-fit: contain;
-        width: 100%;
-        height: 100%;
-        max-width: 800px;
-        max-height: 500px;
-    }
+        .big-photo-container {
+            float: left;
+            height: 100%;
+        }
 
-    .slide-image-arrow {
-        height: 100%;
-        font-size: 50px;
+        .big-photo-container img {
+            object-fit: contain;
+            max-height: 100vh;
+            width: 100vw;
+        }
+
+        .slide-image-arrow {
+            display: none;
+        }
+
+        .main-container::after, .interaction-container::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
     }
 
     .image-info-container {
-        height: 55vh;
-        border: 1px solid black;
-        overflow-y: scroll;
+        padding: 20px;
     }
-}
 
-@media only screen and (max-width: 768px) {
-    .interaction-container {
+    .photo-slide-container {
+        height: 25vh;
+    }
+
+    .pagination-text {
+        height: 5%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .photo-preview {
+        width: 20%;
+        display: inline-block;
         height: 100%;
     }
 
-    .big-photo-container {
-        float: left;
+    .photo-preview img {
+        width: 100%;
         height: 100%;
+        object-fit: cover;
     }
-
-    .big-photo-container img {
-        object-fit: contain;
-        max-height: 100vh;
-        width: 100vw;
-    }
-
-    .slide-image-arrow {
-        display: none;
-    }
-
-    .main-container::after, .interaction-container::after {
-        content: "";
-        clear: both;
-        display: table;
-    }
-}
-
-.image-info-container {
-    padding: 20px;
-}
-
-.photo-slide-container {
-    height: 25vh;
-}
-
-.pagination-text {
-    height: 5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.photo-preview {
-    width: 20%;
-    display: inline-block;
-    height: 100%;
-}
-
-.photo-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 
 </style>

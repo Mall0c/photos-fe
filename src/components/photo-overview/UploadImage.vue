@@ -94,28 +94,28 @@ defineExpose({ openImageUploadDialog })
 
 <style>
 
-.image-upload-container {
-    padding: 20px;
-}
+    .image-upload-container {
+        padding: 20px;
+    }
 
-.image-upload-button, .image-upload-description {
-    padding-top: 15px;
-}
+    .image-upload-button, .image-upload-description {
+        padding-top: 15px;
+    }
 
-.dialog-btn-upload {
-    color: #04AA6D;
-    background-color: white;
-    border: 0px;
-    padding: 10px;
-    font-weight: bold;
-    font-size: 14px;
-    border-radius: 5px;
-    box-shadow: 0 0 3px black;
-}
+    .dialog-btn-upload {
+        color: #04AA6D;
+        background-color: white;
+        border: 0px;
+        padding: 10px;
+        font-weight: bold;
+        font-size: 14px;
+        border-radius: 5px;
+        box-shadow: 0 0 3px black;
+    }
 
-.image-upload-btn-container {
-    display: flex;
-    justify-content: center;
-}
+    .image-upload-btn-container {
+        display: flex;
+        justify-content: center;
+    }
 
 </style>

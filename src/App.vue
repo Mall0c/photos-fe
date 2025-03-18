@@ -30,39 +30,39 @@ function onCloseNotification() {
 
 <style>
 
-.notification-center {
+    .notification-center {
 
-}
+    }
 
-.nav-container {
-    padding: 25px 0px 25px 0px;
-}
+    .nav-container {
+        padding: 25px 0px 25px 0px;
+    }
 
-.mother-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    .mother-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-.overall-container::after {
-    content: "";
-    clear: both;
-    display: table;
-}
+    .overall-container::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
 
-.debug {
-    border: 1px solid red;
-}
+    .debug {
+        border: 1px solid red;
+    }
 
-/* https://stackoverflow.com/a/4407335 */
-.noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-}
+    /* https://stackoverflow.com/a/4407335 */
+    .noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+    }
 
 </style>
