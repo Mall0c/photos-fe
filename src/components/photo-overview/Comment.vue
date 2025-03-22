@@ -1,10 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import { useAuthStore } from '@/stores/auth.store';
 import { useErrorStore } from '@/stores/errors.store';
 import { useRouter } from 'vue-router';
 import { isAdminOrAuthor } from '@/utils'
 import { ref } from 'vue';
 import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
+
+export type TComment = {
+    id?: number
+    users_id?: number
+    image_id?: number
+    commented_at?: number
+    comment?: string
+    author?: string
+}
 
 const props = defineProps(['commentData'])
 const router = useRouter()

@@ -1,26 +1,36 @@
-<script setup>
-import { ref, onMounted } from "vue"
+<script setup lang="ts">
+import { ref, onMounted, type Ref } from "vue"
 import Table from '@/components/utilities/Table.vue';
 import { formatTimestamp } from '@/utils'
+import type { TComment } from "../photo-overview/Comment.vue";
+import type { TImage } from "../guests-gallery/GuestsGallery.vue";
+
+type TActivities = {
+    ownerGallery: Array<TImage>,
+    guestGallery: Array<TImage>,
+    comments: Array<TComment & { type: number }>
+}
 
 const error = ref(null)
-const activities = ref({
-    "ownerGallery": [],
-    "guestGallery": [],
-    "comments": []
-})
+const activities: Ref<TActivities> = ref(
+    {
+        "ownerGallery": [],
+        "guestGallery": [],
+        "comments": []
+    }
+)
 
 /**
  * Fetch activities from backend.
  */
-function fetchActivities(type) {
+function fetchActivities(type: keyof TActivities) {
     fetch(`http://localhost:3000/activities/${type}`)
         .then(res => res.json())
         .then(res => activities.value[type] = res)
         .catch(err => error.value = err)
 }
 
-function getPathToGallery(imgType) {
+function getPathToGallery(imgType: number) {
     if (imgType === 0) {
         return "/gallery/"
     } else if (imgType === 1) {

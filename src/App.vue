@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Navigation from '@/components/navigation/Navigation.vue'
 import Notification from '@/components/utilities/Notification.vue';
 import { useErrorStore } from './stores/errors.store';

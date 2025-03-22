@@ -1,9 +1,19 @@
-<script setup>
-import { ref, computed, onBeforeMount, useTemplateRef, watch } from 'vue';
+<script setup lang="ts">
+import { ref, onBeforeMount, useTemplateRef, watch } from 'vue';
 import CommentArea from '@/components/photo-overview/CommentArea.vue';
 import UploadImage from '@/components/photo-overview/UploadImage.vue';
 import { useRoute, useRouter } from 'vue-router'
 import { getParentPath } from '@/utils'
+
+export type TImage = {
+    id?: number
+    users_id?: number
+    uploaded_at?: number
+    description?: string
+    filename?: string
+    type?: number
+    username?: string
+}
 
 const route = useRoute()
 const router = useRouter()

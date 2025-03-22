@@ -1,10 +1,11 @@
-<script setup>
-import { ref, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted, type Ref } from 'vue';
 import { useErrorStore } from '@/stores/errors.store';
 import { useAuthStore, ROLES } from '@/stores/auth.store';
 import { onBeforeRouteLeave, useRouter } from 'vue-router';
 import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
 import Table from '@/components/utilities/Table.vue';
+import type { TUser } from '@/components/user/Register.vue'
 
 const router = useRouter()
 
@@ -15,16 +16,16 @@ const modalDialogDeleteUser = ref(null)
 const showModalDeleteUser = ref(false)
 
 // Array of users.
-const users = ref([])
+const users: Ref<Array<TUser>> = ref([])
 // ID of the user, when the delete button is clicked.
-const userToDelete = ref(null)
+const userToDelete: Ref<number | null> = ref(null)
 const jwtToken = authStore.token
-const editing = ref(false)
+const editing: Ref<boolean> = ref(false)
 // Do we have unsaved changes? If yes, ask the user before refreshing or leaving the page.
-const unsavedChanges = ref(false)
-const currentlyEditedRow = ref(null)
+const unsavedChanges: Ref<boolean> = ref(false)
+const currentlyEditedRow: Ref<number | null> = ref(null)
 
-function fetchUsers(offset) {
+function fetchUsers(offset: number) {
     const requestOptions = {
             method: "GET",
             headers: { 
@@ -76,43 +77,45 @@ window.onbeforeunload = function (e) {
 };
 
 
-function saveUserChanges(idx, userId) {
-    const userName = document.getElementById("user-name-" + idx).value
-    const roleElem = document.getElementById("select-roles-" + idx)
-    const role = roleElem.options[roleElem.selectedIndex].text
-    
-    // Map string representation of role (Owner, Admin, Guest) to number (0, 1, 2)
-    const roleAsNumber = ROLES[role]
+function saveUserChanges(idx: number, userId: number) {
+    const userName = (document.getElementById("user-name-" + idx) as HTMLInputElement).value
+    const roleElem = document.getElementById("select-roles-" + idx) as HTMLSelectElement
+    if (userName !== null && roleElem !== null) {
+        const role = roleElem.options[roleElem.selectedIndex].text as keyof typeof ROLES
+        
+        // Map string representation of role (Owner, Admin, Guest) to number (0, 1, 2)
+        const roleAsNumber = ROLES[role]
 
-    // Changes are about to be saved. Dont warn user if he wants to reload or leave the page.
-    unsavedChanges.value = false
-    
-    const requestOptions = {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + jwtToken
-            },
-            body: JSON.stringify({ name: userName, role: roleAsNumber })
-        }
-        fetch(`http://localhost:3000/admin/user/${userId}`, requestOptions)
-            .then(async response => {
-                const responseParsed = await response.json()
-                if (response.status === 201) {
-                    console.log("Success")
-                } else if (response.status === 400) {
-                    console.log("Nicht so viel Success")
-                }
-            })
-            .catch(err => {
-                errorStore.setError(err)
-            })
-            .finally(() => {
-                makeReadonly(idx)
-            })
+        // Changes are about to be saved. Dont warn user if he wants to reload or leave the page.
+        unsavedChanges.value = false
+        
+        const requestOptions = {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + jwtToken
+                },
+                body: JSON.stringify({ name: userName, role: roleAsNumber })
+            }
+            fetch(`http://localhost:3000/admin/user/${userId}`, requestOptions)
+                .then(async response => {
+                    const responseParsed = await response.json()
+                    if (response.status === 201) {
+                        console.log("Success")
+                    } else if (response.status === 400) {
+                        console.log("Nicht so viel Success")
+                    }
+                })
+                .catch(err => {
+                    errorStore.setError(err)
+                })
+                .finally(() => {
+                    makeReadonly(idx)
+                })
+    }
 }
 
-function deleteUser(userId) {
+function deleteUser(userId: number) {
     showModalDeleteUser.value = false
     const requestOptions = {
             method: "DELETE",
@@ -129,7 +132,7 @@ function deleteUser(userId) {
             } else if (response.status === 400) {
                 console.log("Nicht so viel Success")
             }
-            router.go()
+            router.go(0)
         })
         .catch(err => {
             errorStore.setError(err)
@@ -143,19 +146,19 @@ function deleteUser(userId) {
  * Make input field and role selector readonly and adjust visibility of buttons.
  * @param idx 0-based idx of the row in the table.
  */
-function makeReadonly(idx) {
-    const userNameElem = document.getElementById("user-name-" + idx)
+function makeReadonly(idx: number) {
+    const userNameElem = document.getElementById("user-name-" + idx) as HTMLInputElement
     userNameElem.readOnly = true
     userNameElem.classList.remove("edit-highlight")
 
-    const roleElem = document.getElementById("select-roles-" + idx)
+    const roleElem = document.getElementById("select-roles-" + idx) as HTMLSelectElement
     roleElem.disabled = true
     roleElem.classList.remove("edit-highlight")
     editing.value = false
 
-    document.getElementById("edit-button-" + idx).style.display = "inline-block"
-    document.getElementById("close-button-" + idx).style.display = "none"
-    document.getElementById("save-button-" + idx).style.display = "none"
+    ;(document.getElementById("edit-button-" + idx) as HTMLImageElement).style.display = "inline-block"
+    ;(document.getElementById("close-button-" + idx) as HTMLImageElement).style.display = "none"
+    ;(document.getElementById("save-button-" + idx) as HTMLImageElement).style.display = "none"
 
     currentlyEditedRow.value = null
 }
@@ -164,26 +167,26 @@ function makeReadonly(idx) {
  * Make input field and role selector editable and adjust visibility of buttons.
  * @param idx 0-based idx of the row in the table.
  */
-function makeEditable(idx) {
-    const userNameElem = document.getElementById("user-name-" + idx)
+function makeEditable(idx: number) {
+    const userNameElem = document.getElementById("user-name-" + idx) as HTMLInputElement
     userNameElem.readOnly = false
     userNameElem.classList.add("edit-highlight")
 
-    const roleElem = document.getElementById("select-roles-" + idx)
+    const roleElem = document.getElementById("select-roles-" + idx) as HTMLSelectElement
     roleElem.disabled = false
     roleElem.classList.add("edit-highlight")
     editing.value = true
 
-    document.getElementById("edit-button-" + idx).style.display = "none"
-    document.getElementById("close-button-" + idx).style.display = "inline-block"
-    document.getElementById("save-button-" + idx).style.display = "inline-block"
+    ;(document.getElementById("edit-button-" + idx) as HTMLImageElement).style.display = "none"
+    ;(document.getElementById("close-button-" + idx) as HTMLImageElement).style.display = "inline-block"
+    ;(document.getElementById("save-button-" + idx) as HTMLImageElement).style.display = "inline-block"
 }
 
 /**
  * Make input field and role selector editable or readonly, depending on the "editing" ref variable.
  * @param idx 0-based idx of the row in the table.
  */
-function editToggle(idx) {
+function editToggle(idx: number) {
     // "currentlyEditedRow" makes sure only one row can be edited at the same time.
     if (currentlyEditedRow.value === idx || currentlyEditedRow.value === null) {
         if (editing.value === false) {
@@ -202,7 +205,7 @@ function editToggle(idx) {
  * @param role Current user role
  * @returns Array of user roles, where the first element is the current user's role.
  */
-function reorderRoleArray(role) {
+function reorderRoleArray(role?: number) {
     let currentRole = "Guest"
     // Map number representation (0, 1, 2) to string (Owner, Admin, Guest)
     for (const [key, val] of Object.entries(ROLES)) {

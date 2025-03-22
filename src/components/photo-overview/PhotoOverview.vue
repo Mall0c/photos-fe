@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onBeforeMount, useTemplateRef, watch } from 'vue';
 import CommentArea from './CommentArea.vue'
 import { useAuthStore } from '@/stores/auth.store';

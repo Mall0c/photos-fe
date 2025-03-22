@@ -1,14 +1,18 @@
 import { defineStore } from 'pinia'
 
+type TErrorsStoreState = {
+    currentError: string | null
+}
+
 export const useErrorStore = defineStore('errors', {
-    state: () => ({
+    state: (): TErrorsStoreState => ({
         currentError: null
     }),
     getters: {
 
     },
     actions: {
-        setError(errorText) {
+        setError(errorText: string) {
             this.currentError = errorText
         }
     }

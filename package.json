@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vue-tsc": "vue-tsc --noEmit && vite build"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",
@@ -19,9 +20,13 @@
     "yup": "^1.3.3"
   },
   "devDependencies": {
+    "@types/vue": "^2.0.0",
     "@vitejs/plugin-vue": "^4.5.2",
+    "@vue/tsconfig": "^0.7.0",
     "sass": "^1.75.0",
     "sass-loader": "^14.2.1",
-    "vite": "^5.0.10"
+    "typescript": "^5.8.2",
+    "vite": "^5.0.10",
+    "vue-tsc": "^2.2.8"
   }
 }

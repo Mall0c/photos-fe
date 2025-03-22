@@ -1,9 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import { useForm } from 'vee-validate';
 import * as yup from 'yup'
 import { useRouter } from 'vue-router';
 import { useErrorStore } from '@/stores/errors.store';
 import { useAuthStore } from '@/stores/auth.store';
+
+export type TUser = {
+    id?: number
+    email?: string
+    name?: string
+    role?: number
+}
 
 const errorStore = useErrorStore()
 const authStore = useAuthStore()

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { watch, onMounted, computed } from 'vue';
 import { debounce } from '@/utils'
