@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, useTemplateRef, watch } from 'vue';
+import { ref, onBeforeMount, useTemplateRef, watch, type Ref } from 'vue';
 import CommentArea from '@/components/photo-overview/CommentArea.vue';
 import UploadImage from '@/components/photo-overview/UploadImage.vue';
 import { useRoute, useRouter } from 'vue-router'
@@ -17,20 +17,23 @@ export type TImage = {
 
 const route = useRoute()
 const router = useRouter()
-const imageIds = ref(null)
+const imageIds: Ref<Array<number> | null> = ref(null)
 const error = ref(null)
-const imageDetailDialogRef = useTemplateRef("image-detail-dialog")
-const uploadImageComponent = useTemplateRef("uploadImageComponent")
+const imageDetailDialogRef = useTemplateRef<HTMLDialogElement>("image-detail-dialog")
+const uploadImageComponent = useTemplateRef<typeof UploadImage>("uploadImageComponent")
 const imageDetailDialogOpened = ref(false)
-const currentImageIdInDialog = ref(null)
+const currentImageIdInDialog: Ref<number | null> = ref(null)
 
 /**
  * Open the dialog for a picture, that shows the picture in bigger resolution,
  * as well as more information like description, comments, uploader, etc.
  */
-function openImageDetailDialog(imageId) {
+function openImageDetailDialog(imageId?: number) {
+    if (typeof imageId !== "number") {
+        return
+    }
     if (imageDetailDialogOpened.value === false) {
-        imageDetailDialogRef.value.showModal()
+        imageDetailDialogRef.value?.showModal()
         imageDetailDialogOpened.value = true
         currentImageIdInDialog.value = imageId
     }
@@ -39,17 +42,18 @@ function openImageDetailDialog(imageId) {
 /**
  * Close the dialog when the user clicks outside the dialog (on the backdrop)
  */
-function closeImageDetailView(event) {
-    const rect = imageDetailDialogRef.value.getBoundingClientRect();
+function closeImageDetailView(event: MouseEvent) {
+    const rect = imageDetailDialogRef.value?.getBoundingClientRect();
     if (
-        rect.top <= event.clientY 
+        rect !== undefined
+        && rect.top <= event.clientY 
         && event.clientY <= rect.top + rect.height 
         && rect.left <= event.clientX 
         && event.clientX <= rect.left + rect.width
     ) {
         // Do nothing
     } else {
-        imageDetailDialogRef.value.close()
+        imageDetailDialogRef.value?.close()
         imageDetailDialogOpened.value = false
         currentImageIdInDialog.value = null
     }
@@ -64,10 +68,10 @@ function fetchImageIds() {
         .then(res => {
             imageIds.value = res
             console.log(route)
-            if (route.params.imgId !== "") {
-                const imageIndex = imageIds.value.indexOf(parseInt(route.params.imgId))
+            if (typeof route.params.imgId === "string" && route.params.imgId !== "") {
+                const imageIndex = imageIds.value?.indexOf(parseInt(route.params.imgId)) ?? -1
                 if (imageIndex > -1) {
-                    openImageDetailDialog(imageIds.value[imageIndex])
+                    openImageDetailDialog(imageIds.value?.[imageIndex])
                 } else {
                     const parentPath = route.fullPath
                         .split('/')
@@ -102,7 +106,7 @@ watch(currentImageIdInDialog, (newVal, oldVal) => {
     <!-- Main content -->
     <div class="content">
         <div class="image-upload-btn-container">
-            <b @click="uploadImageComponent.openImageUploadDialog">Bild hochladen</b>
+            <b @click="uploadImageComponent?.openImageUploadDialog">Bild hochladen</b>
         </div>
         <div v-if="imageIds" class="image-container">
             <div v-for="imageId in imageIds" class="image-preview-box">

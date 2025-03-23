@@ -12,13 +12,12 @@ const router = useRouter()
 const errorStore = useErrorStore()
 const authStore = useAuthStore()
 
-const modalDialogDeleteUser = ref(null)
-const showModalDeleteUser = ref(false)
+const showModalDeleteUser: Ref<boolean> = ref(false)
 
 // Array of users.
 const users: Ref<Array<TUser>> = ref([])
 // ID of the user, when the delete button is clicked.
-const userToDelete: Ref<number | null> = ref(null)
+const userToDelete: Ref<number | undefined> = ref(undefined)
 const jwtToken = authStore.token
 const editing: Ref<boolean> = ref(false)
 // Do we have unsaved changes? If yes, ask the user before refreshing or leaving the page.
@@ -77,7 +76,11 @@ window.onbeforeunload = function (e) {
 };
 
 
-function saveUserChanges(idx: number, userId: number) {
+function saveUserChanges(idx: number, userId?: number) {
+    if (typeof userId !== "number") {
+        return
+    }
+
     const userName = (document.getElementById("user-name-" + idx) as HTMLInputElement).value
     const roleElem = document.getElementById("select-roles-" + idx) as HTMLSelectElement
     if (userName !== null && roleElem !== null) {
@@ -115,7 +118,11 @@ function saveUserChanges(idx: number, userId: number) {
     }
 }
 
-function deleteUser(userId: number) {
+function deleteUser(userId?: number) {
+    if (typeof userId !== "number") {
+        return
+    }
+
     showModalDeleteUser.value = false
     const requestOptions = {
             method: "DELETE",
@@ -138,7 +145,7 @@ function deleteUser(userId: number) {
             errorStore.setError(err)
         })
         .finally(() => {
-            userToDelete.value = null
+            userToDelete.value = undefined
         })
 }
 
@@ -219,6 +226,13 @@ function reorderRoleArray(role?: number) {
     return roles
 }
 
+function setUserToDelete(userId?: number) {
+    if (typeof userId === "number") {
+        showModalDeleteUser.value = true; 
+        userToDelete.value = userId
+    }
+}
+
 </script>
 
 <template>
@@ -243,7 +257,7 @@ function reorderRoleArray(role?: number) {
             <td>
                 <img :id="'edit-button-' + idx" @click="editToggle(idx)" src="../../../public/edit-icon-png-3602.png" width="20px" height="20px">
                 <img :id="'close-button-' + idx" @click="editToggle(idx)" src="../../../public/211652_close_icon.png" width="20px" height="20px" style="display: none;">
-                <img :id="'delete-button-' + idx" @click="{showModalDeleteUser = true; userToDelete = user.id}" src="../../../public/pngwing.com.png" width="20px" height="20px">
+                <img :id="'delete-button-' + idx" @click="setUserToDelete(user.id)" src="../../../public/pngwing.com.png" width="20px" height="20px">
                 <img :id="'save-button-' + idx" @click="saveUserChanges(idx, user.id)" src="../../../public/save.256x256.png" width="20px" height="20px" style="display: none;">
             </td>
         </tr>
@@ -257,7 +271,6 @@ function reorderRoleArray(role?: number) {
 
     <ModalDialogButton
         v-if="showModalDeleteUser"
-        ref="modalDialogDeleteUser"
         buttonColor="red"
         message="Benutzer wirklich löschen?"
         @confirm="deleteUser(userToDelete)"

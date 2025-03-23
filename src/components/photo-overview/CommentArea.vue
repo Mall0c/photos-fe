@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { watch, onMounted, computed } from 'vue';
 import { debounce } from '@/utils'
 import Comment from './Comment.vue'
@@ -8,13 +8,13 @@ import { useErrorStore } from '@/stores/errors.store';
 import { useAuthStore } from '@/stores/auth.store';
 import { isAdminOrAuthor } from '@/utils'
 import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
+import type { TComment } from '@/components/photo-overview/Comment.vue'
 
 const errorStore = useErrorStore()
 const authStore = useAuthStore()
-
 const router = useRouter()
 
-const comments = ref([])
+const comments: Ref<Array<TComment>> = ref([])
 const commentMessage = defineModel("commentMessage")
 const imageData = ref(null)
 const truncatedDescription = ref("")
@@ -34,7 +34,7 @@ const hasTextBeenTruncated = computed(() => {
     return imageData.value.description.length >= TRUNCATE_LEN && imageData.value.description.length !== truncatedDescription.value.length - 3
 })
 
-function truncateText(text) {
+function truncateText(text: string) {
     return text.slice(0, TRUNCATE_LEN) + "..."
 }
 /**
@@ -44,7 +44,7 @@ function fetchImageData(imageUuid, page) {
     fetch(`http://localhost:3000/comments/${imageUuid}/${page}`)
         .then(res => res.json())
         .then(res => {
-            res.forEach(comment => {
+            res.forEach((comment: TComment) => {
                 comments.value.push(comment)
             })
         })
