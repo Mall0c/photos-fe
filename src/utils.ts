@@ -1,11 +1,13 @@
 import { useAuthStore } from '@/stores/auth.store';
+import { type RouteLocationNormalizedLoaded } from 'vue-router';
 
-export function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
+export function debounce(func: Function, wait: number, immediate: boolean) {
+    var timeout: number | undefined;
+    return function(this: any) {
+        var context = this
+        var args = arguments;
         var later = function() {
-            timeout = null;
+            timeout = undefined;
             if (!immediate) func.apply(context, args);
         };
         var callNow = immediate && !timeout;
@@ -15,14 +17,20 @@ export function debounce(func, wait, immediate) {
     };
 };
 
-export function isAdminOrAuthor(authorId) {
+export function isAdminOrAuthor(authorId?: number) {
+    if (authorId === undefined) {
+        return false
+    }
     const authStore = useAuthStore()
     return authStore.isLoggedIn && (authStore.isAdmin || authStore.isOwner || authStore.userId == authorId)
 }
 
-export function formatTimestamp(timestamp) {
-    const date = new Date(parseInt(timestamp) * 1000);
-    console.log(timestamp, date)
+export function formatTimestamp(timestamp?: number) {
+    if (timestamp === undefined) {
+        return ""
+    }
+
+    const date = new Date(timestamp * 1000);
   
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
@@ -35,7 +43,7 @@ export function formatTimestamp(timestamp) {
     return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
 }
 
-export function getParentPath(route) {
+export function getParentPath(route: RouteLocationNormalizedLoaded) {
     return route.path
         .split('/')
         .slice(0, -1)

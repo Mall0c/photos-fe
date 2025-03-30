@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import PhotoOverview from '@/components/photo-overview/PhotoOverview.vue';
-import Home from '@/components/home/Home.vue'
+import PhotoOverview from '../components/photo-overview/PhotoOverview.vue';
+import Home from '../components/home/Home.vue'
 import Register from '@/components/user/Register.vue'
 import Profile from '@/components/profile/Profile.vue'
 import Activities from '@/components/activities/Activities.vue'

@@ -1,38 +1,40 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth.store';
-import { ref, useTemplateRef } from "vue"
+import { ref, useTemplateRef, type Ref } from "vue"
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
 
-const props = defineProps(['imageType'])
-const imageDescription = defineModel("imageDescription")
+const props = defineProps<{imageType: string}>()
+const imageDescription = defineModel<string>("imageDescription")
 
 const authStore = useAuthStore()
 const jwtToken = authStore.token
-const fileInput = useTemplateRef("fileInput")
+const fileInput = useTemplateRef<HTMLInputElement>("fileInput")
 
-const imageUploadDialogRef = useTemplateRef("image-upload-dialog")
-const imageUploadDialogOpened = ref(false)
+const imageUploadDialogRef = useTemplateRef<HTMLDialogElement>("image-upload-dialog")
+const imageUploadDialogOpened: Ref<boolean> = ref(false)
 
 function upload() {
-    const formData = new FormData()
-    formData.append('image', fileInput.value.files[0])
-    formData.append('type', props.imageType)
-    formData.append('description', imageDescription.value)
-    fetch(`http://localhost:3000/images-by-guests`, 
-        {
-            method: "POST",
-            body: formData,
-            headers: { 
-                "Authorization": "Bearer " + jwtToken
+    if (fileInput.value?.files?.[0] !== undefined && imageDescription.value !== undefined) {
+        const formData = new FormData()
+        formData.append('image', fileInput.value?.files[0])
+        formData.append('type', props.imageType.toString())
+        formData.append('description', imageDescription.value)
+        fetch(`http://localhost:3000/images-by-guests`, 
+            {
+                method: "POST",
+                body: formData,
+                headers: { 
+                    "Authorization": "Bearer " + jwtToken
+                }
             }
-        }
-    )
-        .then(e => {
-            router.go()
-        })
-        .catch(e => console.log(e))
+        )
+            .then(e => {
+                router.go(0)
+            })
+            .catch(e => console.log(e))
+    }
 }
 
 /**
@@ -41,7 +43,7 @@ function upload() {
  */
 function openImageUploadDialog() {
     if (imageUploadDialogOpened.value === false) {
-        imageUploadDialogRef.value.showModal()
+        imageUploadDialogRef.value?.showModal()
         imageUploadDialogOpened.value = true
     }
 }
@@ -49,17 +51,18 @@ function openImageUploadDialog() {
 /**
  * Close the dialog when the user clicks outside the dialog (on the backdrop)
  */
-function closeImageUploadView(event) {
-    const rect = imageUploadDialogRef.value.getBoundingClientRect();
+function closeImageUploadView(event: MouseEvent) {
+    const rect = imageUploadDialogRef.value?.getBoundingClientRect();
     if (
-        rect.top <= event.clientY 
+        rect !== undefined
+        && rect.top <= event.clientY 
         && event.clientY <= rect.top + rect.height 
         && rect.left <= event.clientX 
         && event.clientX <= rect.left + rect.width
     ) {
         // Do nothing
     } else {
-        imageUploadDialogRef.value.close()
+        imageUploadDialogRef.value?.close()
         imageUploadDialogOpened.value = false
     }
 }

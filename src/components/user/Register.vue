@@ -46,7 +46,7 @@ const [name, nameAttrs] = defineField('name', {
     validateOnModelUpdate: false,
 });
 
-function onSuccess(values) {
+function onSuccess(values: Record<string, string>) {
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -59,7 +59,7 @@ function onSuccess(values) {
             if (res.status === 201) {
                 //localStorage.setItem('token', res.token)
                 authStore.setUserData(responseParsed.token, responseParsed.userInfo)
-                router.go()
+                router.go(0)
             } else if (res.status === 400) {
                 if (responseParsed.errorcode === 4) {
                     errorStore.setError("E-Mail-Adresse ist bereits in Benutzung.")
@@ -70,14 +70,22 @@ function onSuccess(values) {
         })
 }
 
-function onInvalidSubmit({ values, errors, results }) {
+function onInvalidSubmit({ values, errors, results }: {
+    values: Record<string, string>,
+    errors: Record<string, unknown>,
+    results: Record<string, unknown>
+}) {
     const firstError = Object.keys(errors)[0];
-    errorStore.setError(errors[firstError])
-    const el = document.querySelector(`[name="${firstError}"]`);
-    el?.scrollIntoView({
-        behavior: 'smooth',
-    });
-    el.focus();
+    if (typeof errors[firstError] === "string") {
+        errorStore.setError(errors[firstError])
+        const el = document.querySelector(`[name="${firstError}"]`) as HTMLInputElement
+        el?.scrollIntoView({
+            behavior: 'smooth',
+        });
+        el?.focus();
+    } else {
+        console.log("onInvalidSubmit, type is not string.")
+    }
 }
 
 const onSubmitForm = handleSubmit(onSuccess, onInvalidSubmit)

@@ -21,7 +21,7 @@ const imageIds: Ref<Array<number> | null> = ref(null)
 const error = ref(null)
 const imageDetailDialogRef = useTemplateRef<HTMLDialogElement>("image-detail-dialog")
 const uploadImageComponent = useTemplateRef<typeof UploadImage>("uploadImageComponent")
-const imageDetailDialogOpened = ref(false)
+const imageDetailDialogOpened: Ref<boolean> = ref(false)
 const currentImageIdInDialog: Ref<number | null> = ref(null)
 
 /**

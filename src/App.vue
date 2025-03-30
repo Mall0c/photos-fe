@@ -30,9 +30,11 @@ function onCloseNotification() {
 
 <style>
 
+    /*
     .notification-center {
 
     }
+    */
 
     .nav-container {
         padding: 25px 0px 25px 0px;

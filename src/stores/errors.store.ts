@@ -12,7 +12,7 @@ export const useErrorStore = defineStore('errors', {
 
     },
     actions: {
-        setError(errorText: string) {
+        setError(errorText: string | null) {
             this.currentError = errorText
         }
     }

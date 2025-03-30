@@ -53,7 +53,7 @@ onMounted(() => {
         tableColumns='["Uhrzeit", "Autor", "Kommentar", "Link"]'
     >
         <tr v-for="comment in activities.comments">
-            <td>{{ formatTimestamp(comment.commented_at) }}</td>
+            <td>{{ comment.commented_at !== undefined ? formatTimestamp(comment.commented_at) : 0 }}</td>
             <td>{{ comment.users_id }}</td>
             <td>{{ comment.comment }}</td>
             <td><router-link :to="getPathToGallery(comment.type) + comment.image_id">Bild anschauen</router-link></td>
@@ -66,7 +66,7 @@ onMounted(() => {
         tableColumns='["Uhrzeit", "Autor", "Beschreibung", "Link"]'
     >
         <tr v-for="image in activities.guestGallery">
-            <td>{{ formatTimestamp(image.uploaded_at) }}</td>
+            <td>{{ image.uploaded_at !== undefined ? formatTimestamp(image.uploaded_at) : 0 }}</td>
             <td>{{ image.username }}</td>
             <td>{{ image.description }}</td>
             <td><router-link :to="'/guests-gallery/' + image.id">Bild anschauen</router-link></td>
