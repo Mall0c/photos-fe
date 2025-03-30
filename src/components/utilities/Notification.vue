@@ -1,6 +1,11 @@
 <script setup lang="ts">
-    const props = defineProps(['notificationData'])
-    const emit = defineEmits(['closeNotification'])
+import { type TErrorsStoreState } from '../../stores/errors.store';
+
+const props = defineProps<{
+    notificationData: TErrorsStoreState
+}>()
+
+const emit = defineEmits(['closeNotification'])
 </script>
 
 <template>

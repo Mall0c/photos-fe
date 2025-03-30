@@ -10,28 +10,39 @@ import { isAdminOrAuthor } from '@/utils'
 import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
 import type { TComment } from '@/components/photo-overview/Comment.vue'
 
+type TImageData = {
+    id: number
+    description: string
+    timestamp: number
+    uploader: string
+    uploaderId: number
+}
+
 const errorStore = useErrorStore()
 const authStore = useAuthStore()
 const router = useRouter()
 
 const comments: Ref<Array<TComment>> = ref([])
-const commentMessage = defineModel("commentMessage")
-const imageData = ref(null)
-const truncatedDescription = ref("")
-const isTruncated = ref(true)
-const currentImage = defineProps(['file'])
-const commentPagination = ref(0)
+const commentMessage = defineModel<string>("commentMessage")
+const imageData: Ref<TImageData | null> = ref(null)
+const truncatedDescription: Ref<string> = ref("")
+const isTruncated: Ref<boolean> = ref(true)
+const currentImage = defineProps<{file?: number}>()
+const commentPagination: Ref<number> = ref(0)
 const jwtToken = authStore.token
 
-const modalDialogDeleteImage = ref(null)
-const showModalDeleteImage = ref(false)
-const modalDialogEditDescription = ref(null)
-const showModalEditDescription = ref(false)
+// TODO Check: modalDialogDeleteImage and modalDialogEditDescription are never used. Can they be removed?
+const modalDialogDeleteImage: Ref<typeof ModalDialogButton | null> = ref(null)
+const modalDialogEditDescription: Ref<typeof ModalDialogButton | null> = ref(null)
+const showModalDeleteImage: Ref<boolean> = ref(false)
+const showModalEditDescription: Ref<boolean> = ref(false)
 
 const TRUNCATE_LEN = 100
 
 const hasTextBeenTruncated = computed(() => {
-    return imageData.value.description.length >= TRUNCATE_LEN && imageData.value.description.length !== truncatedDescription.value.length - 3
+    return imageData.value !== null 
+        && imageData.value.description.length >= TRUNCATE_LEN 
+        && imageData.value?.description.length !== truncatedDescription.value.length - 3
 })
 
 function truncateText(text: string) {
@@ -40,7 +51,7 @@ function truncateText(text: string) {
 /**
  * Fetch comments from backend.
  */
-function fetchImageData(imageUuid, page) {
+function fetchImageData(imageUuid: number | undefined, page: number) {
     fetch(`http://localhost:3000/comments/${imageUuid}/${page}`)
         .then(res => res.json())
         .then(res => {
@@ -54,7 +65,9 @@ function fetchImageData(imageUuid, page) {
         .then(res => res.json())
         .then(res => {
             imageData.value = res
-            truncatedDescription.value = truncateText(imageData.value.description)
+            if (imageData.value !== null) {
+                truncatedDescription.value = truncateText(imageData.value.description)
+            }
             // Check if the text is truncated, or not. If not, there is no reason to show the text
             // "mehr anzeigen" in the description.
             if (hasTextBeenTruncated.value === false) {
@@ -65,8 +78,8 @@ function fetchImageData(imageUuid, page) {
 }
 
 // https://stackoverflow.com/a/71185823
-function scrollDetectBottomOfDiv(e) {
-    const { scrollTop, offsetHeight, scrollHeight } = e.target
+function scrollDetectBottomOfDiv(e: Event) {
+    const { scrollTop, offsetHeight, scrollHeight } = e.target as HTMLDivElement
     if((scrollTop + offsetHeight) >= scrollHeight) {
         commentPagination.value++
         fetchImageData(currentImage.file, commentPagination.value)
@@ -76,7 +89,7 @@ function scrollDetectBottomOfDiv(e) {
 // Aus irgendeinem Grunde kann man "debounce(scrollDetectBottomOfDiv, 500)" nicht direkt im Template unten angeben.
 // Stattdessen muss das hier als Variable definiert werden, und diese Variable als Callback im scroll Event
 // angeben, dann gehts.
-const debouncedCb = debounce(scrollDetectBottomOfDiv, 500)
+const debouncedCb = debounce(scrollDetectBottomOfDiv, 500, false)
 
 function submitComment() {
     if (jwtToken) {
@@ -112,7 +125,7 @@ function submitComment() {
     }
 }
 
-function editDescription(imgId, newDesc) {
+function editDescription(imgId: number, newDesc: string) {
     showModalEditDescription.value = false
     if (jwtToken) {
         const requestOptions = {
@@ -125,7 +138,7 @@ function editDescription(imgId, newDesc) {
         }
         fetch(`http://localhost:3000/images/description/${imgId}`, requestOptions)
             .then(async response => {
-                if (response.status === 200) {
+                if (response.status === 200 && imageData.value?.description) {
                     truncatedDescription.value = truncateText(imageData.value.description)
                 } else if (response.status === 400) {
                     console.log(response)
@@ -139,7 +152,7 @@ function editDescription(imgId, newDesc) {
     }
 }
 
-function deleteImage(imgId) {
+function deleteImage(imgId: number) {
     showModalDeleteImage.value = false
     if (jwtToken) {
         const requestOptions = {
@@ -152,7 +165,7 @@ function deleteImage(imgId) {
         fetch(`http://localhost:3000/images/${imgId}`, requestOptions)
             .then(async response => {
                 if (response.status === 200) {
-                    router.go()
+                    router.go(0)
                 } else if (response.status === 400) {
                     console.log(response)
                 }
@@ -245,12 +258,12 @@ watch(currentImage, (newVal, oldVal) => {
         ref="modalDialogEditDescription"
         message="Beschreibung bearbeiten"
         buttonColor="green"
-        v-model:dataTextarea="imageData.description"
-        @confirm="newDesc => editDescription(imageData.id, newDesc)"
+        v-model:dataTextarea="imageData?.description"
+        @confirm="newDesc => { if(imageData !== null) { editDescription(imageData.id, newDesc) } }"
         @close="showModalEditDescription = false"
     />
     <ModalDialogButton
-        v-if="showModalDeleteImage"
+        v-if="showModalDeleteImage && imageData !== null"
         ref="modalDialogDeleteImage"
         buttonColor="red"
         message="Bild wirklich löschen?"

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-type TErrorsStoreState = {
+export type TErrorsStoreState = {
     currentError: string | null
 }
 

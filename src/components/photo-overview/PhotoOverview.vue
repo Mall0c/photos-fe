@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, useTemplateRef, watch } from 'vue';
+import { ref, computed, onBeforeMount, useTemplateRef, watch, type Ref } from 'vue';
 import CommentArea from './CommentArea.vue'
 import { useAuthStore } from '@/stores/auth.store';
 import UploadImage from '@/components/photo-overview/UploadImage.vue';
@@ -9,27 +9,27 @@ const router = useRouter()
 const route = useRoute()
 
 // This contains the image ids that are used in the database.
-const imageIds = ref(null)
+const imageIds: Ref<Array<number> | null> = ref(null)
 const error = ref(null)
 // Page number is zero-based, but for the user, it is shown as pageNumber + 1.
-const pageNumber = ref(0)
+const pageNumber: Ref<number> = ref(0)
 
 // This value starts at 0. It says, which image is currently shown.
-const currentImageNumber = ref(0)
+const currentImageNumber: Ref<number> = ref(0)
 const imgPerPage = 5
-const uploadImageComponent = useTemplateRef("uploadImageComponent")
+const uploadImageComponent = useTemplateRef<typeof UploadImage>("uploadImageComponent")
 
 const authStore = useAuthStore()
 
 const currentImage = computed(() => {
-    return imageIds.value[currentImageNumber.value]
+    return imageIds.value?.[currentImageNumber.value]
 })
 
 /**
  * Change the currently displayed main image.
- * @param {Number} val 
+ * @param val 
  */
-function alterCurrentImage(val) {
+function alterCurrentImage(val: number) {
     if (val === -1) {
         if (currentImageNumber.value === 0) {
             /* Do nothing. */
@@ -51,9 +51,9 @@ function alterCurrentImage(val) {
 
 /**
  * Change the currently displayed page number in the photo preview.
- * @param {Number} val 
+ * @param val 
  */
-function alterPageNumber(val) {
+function alterPageNumber(val: number) {
     if (val === -1) {
         if (pageNumber.value === 0) {
             /* Do nothing. */
@@ -76,14 +76,14 @@ function fetchImageIds() {
             // Once the images are downloaded, check if the provided img id in the route params exists.
             // If yes, navigate to it. If no, navigate to the first image.
             if (route.params.imgId !== "") {
-                const imageIndex = imageIds.value.indexOf(parseInt(route.params.imgId))
-                if (imageIndex > -1) {
+                const imageIndex = imageIds.value?.indexOf(parseInt(route.params.imgId as string))
+                if (imageIndex !== undefined && imageIndex > -1) {
                     currentImageNumber.value = imageIndex
                     // Set the page number.
                     pageNumber.value = Math.floor((imageIndex / imgPerPage))
                 } else {
                     currentImageNumber.value = 0
-                    router.replace(`/gallery/${imageIds.value[currentImageNumber.value]}`)
+                    router.replace(`/gallery/${imageIds.value?.[currentImageNumber.value]}`)
                 }
             }
         })
@@ -96,7 +96,7 @@ onBeforeMount(() => {
 
 watch(currentImageNumber, (newVal, oldVal) => {
     // TODO Remove hard coded path, and replace with utils.getParentPath()
-    router.replace(`/gallery/${imageIds.value[currentImageNumber.value]}`)
+    router.replace(`/gallery/${imageIds.value?.[currentImageNumber.value]}`)
 })
 
 </script>
@@ -148,7 +148,7 @@ watch(currentImageNumber, (newVal, oldVal) => {
         <div class="pagination-text">
             Seite {{ pageNumber + 1 }} / {{Math.ceil(imageIds.length / imgPerPage)}}
         </div>
-        <div v-if="authStore.isAdmin" class="image-upload-btn-container">
+        <div v-if="authStore.isAdmin && uploadImageComponent !== null" class="image-upload-btn-container">
             <b @click="uploadImageComponent.openImageUploadDialog">Bild hochladen</b>
         </div>
     </div>

@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import { useErrorStore } from '@/stores/errors.store';
 import { useRouter } from 'vue-router';
 import { isAdminOrAuthor } from '@/utils'
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
 
 export type TComment = {
@@ -15,16 +15,18 @@ export type TComment = {
     author?: string
 }
 
-const props = defineProps(['commentData'])
+const props = defineProps<{
+    commentData: TComment
+}>()
 const router = useRouter()
-const modalDialogRef = ref(null)
-const showModal = ref(false)
+const modalDialogRef: Ref<typeof ModalDialogButton | null> = ref(null)
+const showModal: Ref<boolean> = ref(false)
 
 const errorStore = useErrorStore()
 const authStore = useAuthStore()
 const jwtToken = authStore.token
 
-function deleteComment(commentId) {
+function deleteComment(commentId: number) {
     const requestOptions = {
             method: "DELETE",
             headers: { 
@@ -39,7 +41,7 @@ function deleteComment(commentId) {
             } else if (response.status === 400) {
                 console.log("Nicht so viel Success")
             }
-            router.go()
+            router.go(0)
         })
         .catch(err => {
             errorStore.setError(err)
@@ -57,7 +59,7 @@ function deleteComment(commentId) {
             <b>{{ props.commentData.author }}</b> {{ props.commentData.comment }} 
         </div>
         <div class="timestamp-buttons-container">
-            <div class="timestamp-info">
+            <div class="timestamp-info" v-if="props.commentData.commented_at !== undefined">
                 {{ new Date(props.commentData.commented_at * 1000).toLocaleString() }}
             </div>
             <div v-if="isAdminOrAuthor(props.commentData.users_id)" class="edit-delete-buttons">
@@ -72,7 +74,7 @@ function deleteComment(commentId) {
         </div>
     </div>
     <ModalDialogButton 
-        v-if="showModal"
+        v-if="showModal && props.commentData.id !== undefined"
         ref="modalDialogRef"
         buttonColor="red"
         message="Kommentar wirklich löschen?" 

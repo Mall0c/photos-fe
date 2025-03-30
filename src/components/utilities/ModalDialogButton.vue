@@ -1,29 +1,30 @@
 <script setup lang="ts">
-    import { onMounted } from 'vue';
-    const emit = defineEmits(['confirm', 'close'])
-    const props = defineProps(['message', 'buttonColor'])
-    const textareaContent = defineModel('dataTextarea')
+import { onMounted } from 'vue';
 
-    onMounted(() => {
-        // From https://www.w3schools.com/howto/howto_css_modals.asp
-        // Get the modal
-        const modal = document.getElementById("myModal");
+const emit = defineEmits(['confirm', 'close'])
+const props = defineProps(['message', 'buttonColor'])
+const textareaContent = defineModel('dataTextarea')
 
-        // Get the <span> element that closes the modal
-        const span = document.getElementsByClassName("close")[0];
+onMounted(() => {
+    // From https://www.w3schools.com/howto/howto_css_modals.asp
+    // Get the modal
+    const modal = document.getElementById("myModal");
 
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
+    // Get the <span> element that closes the modal
+    const span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        emit('close')
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target === modal) {
             emit('close')
         }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                emit('close')
-            }
-        }
-    })
+    }
+})
 </script>
 
 <!-- This component serves as a modal dialog that has a text and a button. Clicking this button emits an event that
