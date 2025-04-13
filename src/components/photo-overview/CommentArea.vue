@@ -42,7 +42,7 @@ const TRUNCATE_LEN = 100
 const hasTextBeenTruncated = computed(() => {
     return imageData.value !== null 
         && imageData.value.description.length >= TRUNCATE_LEN 
-        && imageData.value?.description.length !== truncatedDescription.value.length - 3
+        && imageData.value.description.length !== truncatedDescription.value.length - 3
 })
 
 function truncateText(text: string) {
@@ -254,11 +254,11 @@ watch(currentImage, (newVal, oldVal) => {
         Warten auf Kommentare...
     </div>
     <ModalDialogButton
-        v-if="showModalEditDescription"
+        v-if="showModalEditDescription && imageData !== null"
         ref="modalDialogEditDescription"
         message="Beschreibung bearbeiten"
         buttonColor="green"
-        v-model:dataTextarea="imageData?.description"
+        v-model:dataTextarea="imageData.description"
         @confirm="newDesc => { if(imageData !== null) { editDescription(imageData.id, newDesc) } }"
         @close="showModalEditDescription = false"
     />

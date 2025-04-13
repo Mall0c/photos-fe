@@ -41,6 +41,12 @@ export const useAuthStore = defineStore('auth', {
         },
         userId(): number {
             return this.userInfo.id
+        },
+        name(state): string {
+            return state.userInfo.name
+        },
+        email(state): string {
+            return state.userInfo.email
         }
     },
     actions: {

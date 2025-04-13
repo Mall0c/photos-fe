@@ -100,10 +100,10 @@ function saveUserChanges(idx: number, userId?: number) {
                 },
                 body: JSON.stringify({ name: userName, role: roleAsNumber })
             }
-            fetch(`http://localhost:3000/admin/user/${userId}`, requestOptions)
+            fetch(`http://localhost:3000/user/edit/${userId}`, requestOptions)
                 .then(async response => {
                     const responseParsed = await response.json()
-                    if (response.status === 201) {
+                    if (response.status === 200) {
                         console.log("Success")
                     } else if (response.status === 400) {
                         console.log("Nicht so viel Success")
