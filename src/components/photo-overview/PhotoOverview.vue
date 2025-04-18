@@ -41,7 +41,7 @@ function alterCurrentImage(val: number) {
     }
 
     // Switch page of image preview if necessary.
-    if (currentImageNumber.value % imgPerPage === 9 && val === -1) {
+    if (currentImageNumber.value % imgPerPage === imgPerPage - 1 && val === -1) {
         alterPageNumber(-1)
     }
     else if (currentImageNumber.value % imgPerPage === 0 && val === 1) {
@@ -148,7 +148,7 @@ watch(currentImageNumber, (newVal, oldVal) => {
         <div class="pagination-text">
             Seite {{ pageNumber + 1 }} / {{Math.ceil(imageIds.length / imgPerPage)}}
         </div>
-        <div v-if="authStore.isAdmin && uploadImageComponent !== null" class="image-upload-btn-container">
+        <div v-if="authStore.jwtToken && authStore.isAdmin && uploadImageComponent !== null" class="image-upload-btn-container">
             <b @click="uploadImageComponent.openImageUploadDialog">Bild hochladen</b>
         </div>
     </div>

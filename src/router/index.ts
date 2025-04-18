@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import PhotoOverview from '../components/photo-overview/PhotoOverview.vue';
 import Home from '../components/home/Home.vue'
-import Register from '@/components/user/Register.vue'
+import SignUp from '@/components/user/SignUp.vue'
 import Profile from '@/components/profile/Profile.vue'
 import Activities from '@/components/activities/Activities.vue'
 import GuestsGallery from '@/components/guests-gallery/GuestsGallery.vue'
@@ -16,8 +16,7 @@ export const router = createRouter({
         { path: '/home', component: Home },
         // Question mark allows param to be optional. https://stackoverflow.com/a/47828416
         { path: '/gallery/:imgId?', component: PhotoOverview },
-        { path: '/register', component: Register },
-        { path: '/logout', component: Register },
+        { path: '/signup', component: SignUp },
         { path: '/profile', component: Profile },
         { path: '/activities', component: Activities },
         { path: '/guests-gallery/:imgId?', component: GuestsGallery },
@@ -35,7 +34,6 @@ router.beforeEach(async (to) => {
     const authStore = useAuthStore();
 
     if (authRequired && authStore.isLoggedIn === false) {
-        console.log("Hier 1")
         return '/gallery';
     }
 
@@ -43,7 +41,6 @@ router.beforeEach(async (to) => {
     const permissionRequired = restrictedPages.includes(to.path)
 
     if (permissionRequired && (authStore.isLoggedIn === false || authStore.isAdmin === false)) {
-        console.log("Hier 2")
         return '/gallery'
     }
 });

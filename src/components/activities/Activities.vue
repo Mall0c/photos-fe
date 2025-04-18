@@ -4,6 +4,12 @@ import Table from '@/components/utilities/Table.vue';
 import { formatTimestamp } from '@/utils'
 import type { TComment } from "../photo-overview/Comment.vue";
 import type { TImage } from "../guests-gallery/GuestsGallery.vue";
+import { useAuthStore } from '@/stores/auth.store';
+
+// If userId is set, then Activities.vue is called from inside the Profile.vue component.
+// That means, we want to fetch the data only for this user, and not the activities of the owner.
+const props = defineProps<{userId?: number}>()
+const authStore = useAuthStore()
 
 type TActivities = {
     ownerGallery: Array<TImage>,
@@ -24,7 +30,20 @@ const activities: Ref<TActivities> = ref(
  * Fetch activities from backend.
  */
 function fetchActivities(type: keyof TActivities) {
-    fetch(`http://localhost:3000/activities/${type}`)
+    let url = `http://localhost:3000/activities/${type}`
+    const requestOptions: any = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+
+    if (props.userId !== undefined) {
+        url += `/${props.userId}`
+        requestOptions.headers.Authorization = "Bearer " + authStore.jwtToken
+    }
+
+    fetch(url, requestOptions)
         .then(res => res.json())
         .then(res => activities.value[type] = res)
         .catch(err => error.value = err)
@@ -40,7 +59,7 @@ function getPathToGallery(imgType: number) {
 }
 
 onMounted(() => {
-    fetchActivities("ownerGallery")
+    if (props.userId === undefined) fetchActivities("ownerGallery")
     fetchActivities("guestGallery")
     fetchActivities("comments")
 })
@@ -54,7 +73,7 @@ onMounted(() => {
     >
         <tr v-for="comment in activities.comments">
             <td>{{ formatTimestamp(comment.commented_at) }}</td>
-            <td>{{ comment.users_id }}</td>
+            <td>{{ comment.author }}</td>
             <td>{{ comment.comment }}</td>
             <td><router-link :to="getPathToGallery(comment.type) + comment.image_id">Bild anschauen</router-link></td>
         </tr>
@@ -75,6 +94,7 @@ onMounted(() => {
 
     <!-- Adminbilder -->
     <Table
+        v-if="$props.userId === undefined"
         tableTitle="Neuste Bilder, die das Brautpaar hochgeladen hat"
         tableColumns='["Uhrzeit", "Beschreibung", "Link"]'
     >

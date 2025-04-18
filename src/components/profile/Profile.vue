@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth.store';
 import { useErrorStore } from '@/stores/errors.store';
+import Activities from '@/components/activities/Activities.vue';
 
 const authStore = useAuthStore()
 const errorStore = useErrorStore()
@@ -112,6 +113,7 @@ function saveData(type: "general" | "password") {
         <button @click="saveData('password')">Speichern</button>
         <span class="section-title">Meine letzten Aktivitäten</span>
         <hr>
+        <Activities :userId="authStore.userId"></Activities>
         <span class="section-title">Konto löschen</span>
         <hr>
     </div>

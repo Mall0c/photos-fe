@@ -1,81 +1,60 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate';
-import * as yup from 'yup'
 import { useRouter } from 'vue-router';
 import { useErrorStore } from '@/stores/errors.store';
 import { useAuthStore } from '@/stores/auth.store';
-
-export type TUser = {
-    id?: number
-    email?: string
-    name?: string
-    role?: number
-}
+import * as yup from 'yup'
 
 const errorStore = useErrorStore()
 const authStore = useAuthStore()
-
 const router = useRouter()
 
-if (authStore.token !== null) {
-    router.push('/gallery')
-}
+const jwtToken = authStore.token
 
-const schema = yup.object({
+const userSchema = yup.object({
     email: yup.string().required().email(),
-    password: yup.string().required(),
-    passwordConfirm: yup.string().required(),
-    name: yup.string().required()
+    password: yup.string().required()
 })
 
 const { values, errors, handleSubmit, defineField } = useForm({
-    validationSchema: schema
+    validationSchema: userSchema
 });
+
 
 const [email, emailAttrs] = defineField('email', {
-    validateOnModelUpdate: false,
+    validateOnModelUpdate: false
 });
-
 const [password, passwordAttrs] = defineField('password', {
     validateOnModelUpdate: false,
 });
-const [passwordConfirm, passwordConfirmAttrs] = defineField('passwordConfirm', {
-    validateOnModelUpdate: false,
-});
-const [name, nameAttrs] = defineField('name', {
-    validateOnModelUpdate: false,
-});
 
-function onSuccess(values: Record<string, string>) {
+function onSuccess(values: Record<string, unknown>) {
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values)
     }
 
-    fetch("http://localhost:3000/user/register", requestOptions)
+    fetch("http://localhost:3000/user/login", requestOptions)
         .then(async res => {
             const responseParsed = await res.json()
-            if (res.status === 201) {
-                //localStorage.setItem('token', res.token)
+            if (res.status === 200) {
                 authStore.setUserData(responseParsed.token, responseParsed.userInfo)
                 router.go(0)
-            } else if (res.status === 400) {
-                if (responseParsed.errorcode === 4) {
-                    errorStore.setError("E-Mail-Adresse ist bereits in Benutzung.")
-                } else if (responseParsed.errorcode === 5) {
-                    errorStore.setError("Name ist bereits in Benutzung.")
+            } else if (res.status === 401) {
+                if (responseParsed.errorcode === 1) {
+                    errorStore.setError("Benutzer existiert nicht oder das Passwort ist falsch.")
                 }
             }
         })
 }
 
 function onInvalidSubmit({ values, errors, results }: {
-    values: Record<string, string>,
+    values: Record<string, unknown>,
     errors: Record<string, unknown>,
     results: Record<string, unknown>
 }) {
-    const firstError = Object.keys(errors)[0];
+    const firstError = Object.keys(errors)[0]
     if (typeof errors[firstError] === "string") {
         errorStore.setError(errors[firstError])
         const el = document.querySelector(`[name="${firstError}"]`) as HTMLInputElement
@@ -102,25 +81,13 @@ const onSubmitForm = handleSubmit(onSuccess, onInvalidSubmit)
                     <input v-model="email" v-bind="emailAttrs" type="text" name="email" />
                 </div>
                 <hr>
-                <div class="input-field-title">Name</div>
-                <hr>
-                <div class="input-field">
-                    <input v-model="name" v-bind="nameAttrs" type="text" name="name" />
-                </div>
-                <hr>
                 <div class="input-field-title">Passwort</div>
                 <hr>
                 <div class="input-field">
-                    <input v-model="password" v-bind="passwordAttrs" type="text" name="passwordAttrs" />
+                    <input v-model="password" v-bind="passwordAttrs" type="password" name="password" />
                 </div>
                 <hr>
-                <div class="input-field-title">Passwort wiederholen</div>
-                <hr>
-                <div class="input-field">
-                    <input v-model="passwordConfirm" v-bind="passwordConfirmAttrs" type="text" name="passwordConfirm" />
-                </div>
-                <hr>
-                <button>Registrieren</button>
+                <button>Login</button>
             </form>
         </div>
     </div>
