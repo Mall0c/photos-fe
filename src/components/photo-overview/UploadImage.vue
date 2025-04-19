@@ -21,12 +21,12 @@ function upload() {
         formData.append('image', fileInput.value?.files[0])
         formData.append('type', props.imageType.toString())
         formData.append('description', imageDescription.value)
-        fetch(`http://localhost:3000/images-by-guests`, 
+        fetch(`http://localhost/api/images-by-guests`, 
             {
                 method: "POST",
                 body: formData,
                 headers: { 
-                    "Authorization": "Bearer " + jwtToken
+                    "X-Auth-Token": "Bearer " + jwtToken
                 }
             }
         )

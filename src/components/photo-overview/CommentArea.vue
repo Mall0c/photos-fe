@@ -52,7 +52,7 @@ function truncateText(text: string) {
  * Fetch comments from backend.
  */
 function fetchImageData(imageUuid: number | undefined, page: number) {
-    fetch(`http://localhost:3000/comments/${imageUuid}/${page}`)
+    fetch(`http://localhost/api/comments/${imageUuid}/${page}`)
         .then(res => res.json())
         .then(res => {
             res.forEach((comment: TComment) => {
@@ -61,7 +61,7 @@ function fetchImageData(imageUuid: number | undefined, page: number) {
         })
         .catch(err => errorStore.setError(err))
 
-    fetch(`http://localhost:3000/images/metadata/${imageUuid}`)
+    fetch(`http://localhost/api/images/metadata/${imageUuid}`)
         .then(res => res.json())
         .then(res => {
             imageData.value = res
@@ -97,11 +97,11 @@ function submitComment() {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + jwtToken
+                "X-Auth-Token": "Bearer " + jwtToken
             },
             body: JSON.stringify({ comment: commentMessage.value })
         }
-        fetch(`http://localhost:3000/comments/${currentImage.file}`, requestOptions)
+        fetch(`http://localhost/api/comments/${currentImage.file}`, requestOptions)
             .then(async response => {
                 const responseParsed = await response.json()
                 if (response.status === 201) {
@@ -132,11 +132,11 @@ function editDescription(imgId: number, newDesc: string) {
             method: "PUT",
             headers: { 
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + jwtToken
+                "X-Auth-Token": "Bearer " + jwtToken
             },
             body: JSON.stringify({ description: newDesc })
         }
-        fetch(`http://localhost:3000/images/description/${imgId}`, requestOptions)
+        fetch(`http://localhost/api/images/description/${imgId}`, requestOptions)
             .then(async response => {
                 if (response.status === 200 && imageData.value?.description) {
                     truncatedDescription.value = truncateText(imageData.value.description)
@@ -159,10 +159,10 @@ function deleteImage(imgId: number) {
             method: "DELETE",
             headers: { 
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + jwtToken
+                "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-        fetch(`http://localhost:3000/images/${imgId}`, requestOptions)
+        fetch(`http://localhost/api/images/${imgId}`, requestOptions)
             .then(async response => {
                 if (response.status === 200) {
                     router.go(0)

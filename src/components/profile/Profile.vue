@@ -48,11 +48,11 @@ function saveData(type: "general" | "password") {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + authStore.jwtToken
+            "X-Auth-Token": "Bearer " + authStore.jwtToken
         },
         body: JSON.stringify(data)
     }
-    fetch(`http://localhost:3000/user/edit/${authStore.userId}`, requestOptions)
+    fetch(`http://localhost/api/user/edit/${authStore.userId}`, requestOptions)
         .then(async response => {
             if (response.status === 200) {
                 if (type === "general") {

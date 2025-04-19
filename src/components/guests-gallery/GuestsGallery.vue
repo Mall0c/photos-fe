@@ -63,7 +63,7 @@ function closeImageDetailView(event: MouseEvent) {
  * Fetch file names from backend.
  */
 function fetchImageIds() {
-    fetch("http://localhost:3000/images-by-guests")
+    fetch("http://localhost/api/images-by-guests")
         .then(res => res.json())
         .then(res => {
             imageIds.value = res
@@ -110,7 +110,7 @@ watch(currentImageIdInDialog, (newVal, oldVal) => {
         </div>
         <div v-if="imageIds" class="image-container">
             <div v-for="imageId in imageIds" class="image-preview-box">
-                <img :src="`http://localhost:3000/images/scaled/${imageId}`" @click="openImageDetailDialog(imageId)" />
+                <img :src="`http://localhost/api/images/scaled/${imageId}`" @click="openImageDetailDialog(imageId)" />
             </div>
         </div>
     </div>
@@ -118,7 +118,7 @@ watch(currentImageIdInDialog, (newVal, oldVal) => {
     <dialog class="image-detail-view-container" ref="image-detail-dialog" @click="closeImageDetailView">
         <div v-if="currentImageIdInDialog" class="image-detail-view-element">
             <div class="image-detail-view">
-                <img :src="`http://localhost:3000/images/${currentImageIdInDialog}`">
+                <img :src="`http://localhost/api/images/${currentImageIdInDialog}`">
             </div>
             <div class="image-description">
                 <KeepAlive>

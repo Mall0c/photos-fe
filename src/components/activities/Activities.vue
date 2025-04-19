@@ -30,7 +30,7 @@ const activities: Ref<TActivities> = ref(
  * Fetch activities from backend.
  */
 function fetchActivities(type: keyof TActivities) {
-    let url = `http://localhost:3000/activities/${type}`
+    let url = `http://localhost/api/activities/${type}`
     const requestOptions: any = {
         method: "GET",
         headers: {
@@ -40,7 +40,7 @@ function fetchActivities(type: keyof TActivities) {
 
     if (props.userId !== undefined) {
         url += `/${props.userId}`
-        requestOptions.headers.Authorization = "Bearer " + authStore.jwtToken
+        requestOptions.headers["X-Auth-Token"] = "Bearer " + authStore.jwtToken
     }
 
     fetch(url, requestOptions)

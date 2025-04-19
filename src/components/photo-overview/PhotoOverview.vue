@@ -69,7 +69,7 @@ function alterPageNumber(val: number) {
  * Fetch file names from backend.
  */
 function fetchImageIds() {
-    fetch("http://localhost:3000/images")
+    fetch("http://localhost/api/images")
         .then(res => res.json())
         .then(res => { 
             imageIds.value = res
@@ -112,7 +112,7 @@ watch(currentImageNumber, (newVal, oldVal) => {
                 <div @click="alterCurrentImage(-1)">&#8592;</div>
             </div>
             <div class="big-photo-container col-7">
-                <img :src="`http://localhost:3000/images/${imageIds[currentImageNumber]}`" />
+                <img :src="`http://localhost/api/images/${imageIds[currentImageNumber]}`" />
             </div>
             <div class="slide-image-arrow noselect col-1">
                 <div @click="alterCurrentImage(1)">&#8594;</div>
@@ -129,7 +129,7 @@ watch(currentImageNumber, (newVal, oldVal) => {
                 v-for="(file, idx) in imageIds.slice(pageNumber * imgPerPage, (pageNumber + 1) * imgPerPage)" 
                 class="photo-preview"
             >
-                <img :src="`http://localhost:3000/images/scaled/${file}`" @click="currentImageNumber = (pageNumber * imgPerPage) + idx" />
+                <img :src="`http://localhost/api/images/scaled/${file}`" @click="currentImageNumber = (pageNumber * imgPerPage) + idx" />
             </div>
         </div>
         <!-- Pagination + image upload -->

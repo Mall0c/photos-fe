@@ -31,10 +31,10 @@ function deleteComment(commentId: number) {
             method: "DELETE",
             headers: { 
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + jwtToken
+                "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-    fetch(`http://localhost:3000/comments/${commentId}`, requestOptions)
+    fetch(`http://localhost/api/comments/${commentId}`, requestOptions)
         .then(async response => {
             if (response.status === 200) {
                 console.log("Success")

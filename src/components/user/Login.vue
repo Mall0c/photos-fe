@@ -35,7 +35,7 @@ function onSuccess(values: Record<string, unknown>) {
         body: JSON.stringify(values)
     }
 
-    fetch("http://localhost:3000/user/login", requestOptions)
+    fetch("http://localhost/api/user/login", requestOptions)
         .then(async res => {
             const responseParsed = await res.json()
             if (res.status === 200) {

@@ -29,10 +29,10 @@ function fetchUsers(offset: number) {
             method: "GET",
             headers: { 
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + jwtToken
+                "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-        fetch(`http://localhost:3000/users/${offset}`, requestOptions)
+        fetch(`http://localhost/api/users/${offset}`, requestOptions)
             .then(async response => {
                 const responseParsed = await response.json()
                 if (response.status === 200) {
@@ -96,11 +96,11 @@ function saveUserChanges(idx: number, userId?: number) {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + jwtToken
+                    "X-Auth-Token": "Bearer " + jwtToken
                 },
                 body: JSON.stringify({ name: userName, role: roleAsNumber })
             }
-            fetch(`http://localhost:3000/user/edit/${userId}`, requestOptions)
+            fetch(`http://localhost/api/user/edit/${userId}`, requestOptions)
                 .then(async response => {
                     const responseParsed = await response.json()
                     if (response.status === 200) {
@@ -128,10 +128,10 @@ function deleteUser(userId?: number) {
             method: "DELETE",
             headers: { 
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + jwtToken
+                "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-    fetch(`http://localhost:3000/admin/user/${userId}`, requestOptions)
+    fetch(`http://localhost/api/admin/user/${userId}`, requestOptions)
         .then(async response => {
             const responseParsed = await response.json()
             if (response.status === 200) {

@@ -11,7 +11,7 @@
             <p>Viel Freude beim Stöbern in den Bildern.</p>
             <p>Anna und Richard</p>
         </div>
-        <div class="box"><img :src="`http://localhost:3000/images/2315`"></div>
+        <div class="box"><img :src="`http://localhost/api/images/2315`"></div>
     </div>
 </template>
 
