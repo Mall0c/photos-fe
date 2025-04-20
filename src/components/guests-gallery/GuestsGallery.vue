@@ -3,7 +3,7 @@ import { ref, onBeforeMount, useTemplateRef, watch, type Ref } from 'vue';
 import CommentArea from '@/components/photo-overview/CommentArea.vue';
 import UploadImage from '@/components/photo-overview/UploadImage.vue';
 import { useRoute, useRouter } from 'vue-router'
-import { getParentPath } from '@/utils'
+import { getAPIURL, getParentPath } from '@/utils'
 
 export type TImage = {
     id?: number
@@ -63,7 +63,7 @@ function closeImageDetailView(event: MouseEvent) {
  * Fetch file names from backend.
  */
 function fetchImageIds() {
-    fetch("https://richardsteinbrecht.de/api/images-by-guests")
+    fetch(`${getAPIURL()}/api/images-by-guests`)
         .then(res => res.json())
         .then(res => {
             imageIds.value = res
@@ -109,7 +109,7 @@ watch(currentImageIdInDialog, (newVal, oldVal) => {
         </div>
         <div v-if="imageIds" class="image-container">
             <div v-for="imageId in imageIds" class="image-preview-box">
-                <img :src="`https://richardsteinbrecht.de/api/images/scaled/${imageId}`" @click="openImageDetailDialog(imageId)" />
+                <img :src="`${getAPIURL()}/api/images/scaled/${imageId}`" @click="openImageDetailDialog(imageId)" />
             </div>
         </div>
     </div>
@@ -117,7 +117,7 @@ watch(currentImageIdInDialog, (newVal, oldVal) => {
     <dialog class="image-detail-view-container" ref="image-detail-dialog" @click="closeImageDetailView">
         <div v-if="currentImageIdInDialog" class="image-detail-view-element">
             <div class="image-detail-view">
-                <img :src="`https://richardsteinbrecht.de/api/images/${currentImageIdInDialog}`">
+                <img :src="`${getAPIURL()}/api/images/${currentImageIdInDialog}`">
             </div>
             <div class="image-description">
                 <KeepAlive>

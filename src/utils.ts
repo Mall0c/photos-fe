@@ -49,3 +49,7 @@ export function getParentPath(route: RouteLocationNormalizedLoaded) {
         .slice(0, -1)
         .join('/')
 }
+
+export function getAPIURL() {
+    return import.meta.env.VITE_API_URL
+}

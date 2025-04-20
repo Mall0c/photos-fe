@@ -5,6 +5,7 @@ import { formatTimestamp } from '@/utils'
 import type { TComment } from "../photo-overview/Comment.vue";
 import type { TImage } from "../guests-gallery/GuestsGallery.vue";
 import { useAuthStore } from '@/stores/auth.store';
+import { getAPIURL } from "@/utils"
 
 // If userId is set, then Activities.vue is called from inside the Profile.vue component.
 // That means, we want to fetch the data only for this user, and not the activities of the owner.
@@ -30,7 +31,7 @@ const activities: Ref<TActivities> = ref(
  * Fetch activities from backend.
  */
 function fetchActivities(type: keyof TActivities) {
-    let url = `https://richardsteinbrecht.de/api/activities/${type}`
+    let url = `${getAPIURL()}/api/activities/${type}`
     const requestOptions: any = {
         method: "GET",
         headers: {
@@ -95,7 +96,7 @@ onMounted(() => {
     <!-- Adminbilder -->
     <Table
         v-if="$props.userId === undefined"
-        tableTitle="Neuste Bilder, die das Brautpaar hochgeladen hat"
+        tableTitle="Neuste Bilder, die der Websitenbetreiber hochgeladen hat"
         tableColumns='["Uhrzeit", "Beschreibung", "Link"]'
     >
         <tr v-for="image in activities.ownerGallery">

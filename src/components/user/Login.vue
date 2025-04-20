@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useErrorStore } from '@/stores/errors.store';
 import { useAuthStore } from '@/stores/auth.store';
 import * as yup from 'yup'
+import { getAPIURL } from '@/utils'
 
 const errorStore = useErrorStore()
 const authStore = useAuthStore()
@@ -35,7 +36,7 @@ function onSuccess(values: Record<string, unknown>) {
         body: JSON.stringify(values)
     }
 
-    fetch("https://richardsteinbrecht.de/api/user/login", requestOptions)
+    fetch(`${getAPIURL()}/api/user/login`, requestOptions)
         .then(async res => {
             const responseParsed = await res.json()
             if (res.status === 200) {

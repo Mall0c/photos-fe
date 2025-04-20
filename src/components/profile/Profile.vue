@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/auth.store';
 import { useErrorStore } from '@/stores/errors.store';
 import Activities from '@/components/activities/Activities.vue';
+import { getAPIURL } from '@/utils'
 
 const authStore = useAuthStore()
 const errorStore = useErrorStore()
@@ -52,7 +53,7 @@ function saveData(type: "general" | "password") {
         },
         body: JSON.stringify(data)
     }
-    fetch(`https://richardsteinbrecht.de/api/user/edit/${authStore.userId}`, requestOptions)
+    fetch(`${getAPIURL()}/api/user/edit/${authStore.userId}`, requestOptions)
         .then(async response => {
             if (response.status === 200) {
                 if (type === "general") {

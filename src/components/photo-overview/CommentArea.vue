@@ -6,7 +6,7 @@ import Comment from './Comment.vue'
 import { useRouter } from 'vue-router';
 import { useErrorStore } from '@/stores/errors.store';
 import { useAuthStore } from '@/stores/auth.store';
-import { isAdminOrAuthor } from '@/utils'
+import { isAdminOrAuthor, getAPIURL } from '@/utils'
 import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
 import type { TComment } from '@/components/photo-overview/Comment.vue'
 
@@ -53,7 +53,7 @@ function truncateText(text: string) {
  */
 function fetchImageData(imageUuid: number | undefined, page: number) {
     if (imageUuid !== undefined) {
-        fetch(`https://richardsteinbrecht.de/api/comments/${imageUuid}/${page}`)
+        fetch(`${getAPIURL()}/api/comments/${imageUuid}/${page}`)
             .then(res => res.json())
             .then(res => {
                 res.forEach((comment: TComment) => {
@@ -62,7 +62,7 @@ function fetchImageData(imageUuid: number | undefined, page: number) {
             })
             .catch(err => errorStore.setError(err))
 
-        fetch(`https://richardsteinbrecht.de/api/images/metadata/${imageUuid}`)
+        fetch(`${getAPIURL()}/api/images/metadata/${imageUuid}`)
             .then(res => res.json())
             .then(res => {
                 imageData.value = res
@@ -103,7 +103,7 @@ function submitComment() {
             },
             body: JSON.stringify({ comment: commentMessage.value })
         }
-        fetch(`https://richardsteinbrecht.de/api/comments/${currentImage.file}`, requestOptions)
+        fetch(`${getAPIURL()}/api/comments/${currentImage.file}`, requestOptions)
             .then(async response => {
                 const responseParsed = await response.json()
                 if (response.status === 201) {
@@ -138,7 +138,7 @@ function editDescription(imgId: number, newDesc: string) {
             },
             body: JSON.stringify({ description: newDesc })
         }
-        fetch(`https://richardsteinbrecht.de/api/images/description/${imgId}`, requestOptions)
+        fetch(`${getAPIURL()}/api/images/description/${imgId}`, requestOptions)
             .then(async response => {
                 if (response.status === 200 && imageData.value?.description) {
                     truncatedDescription.value = truncateText(imageData.value.description)
@@ -164,7 +164,7 @@ function deleteImage(imgId: number) {
                 "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-        fetch(`https://richardsteinbrecht.de/api/images/${imgId}`, requestOptions)
+        fetch(`${getAPIURL()}/api/images/${imgId}`, requestOptions)
             .then(async response => {
                 if (response.status === 200) {
                     router.go(0)

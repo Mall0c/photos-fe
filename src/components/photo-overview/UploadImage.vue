@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/auth.store';
 import { ref, useTemplateRef, type Ref } from "vue"
 import { useRouter } from 'vue-router';
+import { getAPIURL } from '@/utils'
 
 const router = useRouter()
 
@@ -21,7 +22,7 @@ function upload() {
         formData.append('image', fileInput.value?.files[0])
         formData.append('type', props.imageType.toString())
         formData.append('description', imageDescription.value)
-        fetch(`https://richardsteinbrecht.de/api/images-by-guests`, 
+        fetch(`${getAPIURL()}/api/images-by-guests`, 
             {
                 method: "POST",
                 body: formData,

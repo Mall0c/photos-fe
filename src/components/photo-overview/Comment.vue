@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { isAdminOrAuthor } from '@/utils'
 import { ref, type Ref } from 'vue';
 import ModalDialogButton from '@/components/utilities/ModalDialogButton.vue';
+import { getAPIURL } from '@/utils';
 
 export type TComment = {
     id?: number
@@ -34,7 +35,7 @@ function deleteComment(commentId: number) {
                 "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-    fetch(`https://richardsteinbrecht.de/api/comments/${commentId}`, requestOptions)
+    fetch(`${getAPIURL()}/api/comments/${commentId}`, requestOptions)
         .then(async response => {
             if (response.status === 200) {
                 console.log("Success")

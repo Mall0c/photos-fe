@@ -4,6 +4,7 @@ import * as yup from 'yup'
 import { useRouter } from 'vue-router';
 import { useErrorStore } from '@/stores/errors.store';
 import { useAuthStore } from '@/stores/auth.store';
+import { getAPIURL } from '@/utils'
 
 export type TUser = {
     id?: number
@@ -53,7 +54,7 @@ function onSuccess(values: Record<string, string>) {
         body: JSON.stringify(values)
     }
 
-    fetch("https://richardsteinbrecht.de/api/user/register", requestOptions)
+    fetch(`${getAPIURL()}/api/user/register`, requestOptions)
         .then(async res => {
             const responseParsed = await res.json()
             if (res.status === 201) {

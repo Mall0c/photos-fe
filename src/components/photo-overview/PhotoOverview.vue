@@ -4,6 +4,7 @@ import CommentArea from './CommentArea.vue'
 import { useAuthStore } from '@/stores/auth.store';
 import UploadImage from '@/components/photo-overview/UploadImage.vue';
 import { useRoute, useRouter } from 'vue-router'
+import { getAPIURL } from '@/utils';
 
 const router = useRouter()
 const route = useRoute()
@@ -69,7 +70,7 @@ function alterPageNumber(val: number) {
  * Fetch file names from backend.
  */
 function fetchImageIds() {
-    fetch("https://richardsteinbrecht.de/api/images")
+    fetch(`${getAPIURL()}/api/images`)
         .then(res => res.json())
         .then(res => { 
             imageIds.value = res
@@ -112,7 +113,7 @@ watch(currentImageNumber, (newVal, oldVal) => {
                 <div @click="alterCurrentImage(-1)">&#8592;</div>
             </div>
             <div class="big-photo-container col-7">
-                <img v-if="imageIds[currentImageNumber]" :src="`https://richardsteinbrecht.de/api/images/${imageIds[currentImageNumber]}`" />
+                <img v-if="imageIds[currentImageNumber]" :src="`${getAPIURL()}/api/images/${imageIds[currentImageNumber]}`" />
             </div>
             <div class="slide-image-arrow noselect col-1">
                 <div @click="alterCurrentImage(1)">&#8594;</div>
@@ -129,7 +130,7 @@ watch(currentImageNumber, (newVal, oldVal) => {
                 v-for="(file, idx) in imageIds.slice(pageNumber * imgPerPage, (pageNumber + 1) * imgPerPage)" 
                 class="photo-preview"
             >
-                <img :src="`https://richardsteinbrecht.de/api/images/scaled/${file}`" @click="currentImageNumber = (pageNumber * imgPerPage) + idx" />
+                <img :src="`${getAPIURL()}/api/images/scaled/${file}`" @click="currentImageNumber = (pageNumber * imgPerPage) + idx" />
             </div>
         </div>
         <!-- Pagination + image upload -->
