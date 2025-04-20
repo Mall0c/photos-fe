@@ -112,7 +112,7 @@ watch(currentImageNumber, (newVal, oldVal) => {
                 <div @click="alterCurrentImage(-1)">&#8592;</div>
             </div>
             <div class="big-photo-container col-7">
-                <img :src="`http://localhost/api/images/${imageIds[currentImageNumber]}`" />
+                <img v-if="imageIds[currentImageNumber]" :src="`http://localhost/api/images/${imageIds[currentImageNumber]}`" />
             </div>
             <div class="slide-image-arrow noselect col-1">
                 <div @click="alterCurrentImage(1)">&#8594;</div>
@@ -146,7 +146,7 @@ watch(currentImageNumber, (newVal, oldVal) => {
             </span>
         </div>
         <div class="pagination-text">
-            Seite {{ pageNumber + 1 }} / {{Math.ceil(imageIds.length / imgPerPage)}}
+            Seite {{ pageNumber + 1 }} / {{Math.ceil(imageIds.length / imgPerPage) || 1}}
         </div>
         <div v-if="authStore.jwtToken && authStore.isAdmin && uploadImageComponent !== null" class="image-upload-btn-container">
             <b @click="uploadImageComponent.openImageUploadDialog">Bild hochladen</b>

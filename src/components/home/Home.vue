@@ -5,13 +5,13 @@
 <template>
     <div class="landing-page-container">
         <div class="box">
-            <p class="landing-page-headline">Willkommen bei Annas und Richards Hochzeitsgalerie</p>
+            <p class="landing-page-headline">Unsere Katzen heißen Dich willkommen.</p>
             <p>Schön, dass Du den Weg zu unserer Website gefunden hast. Neben unseren Fotos können Gäste
-            auch ihre eigenen Bilder hochladen und somit mit uns teilen. Wir würden uns sehr darüber freuen.</p>
+            auch Bilder ihrer eigenen Katzen hochladen und somit mit uns teilen. Wir würden uns sehr darüber freuen.</p>
             <p>Viel Freude beim Stöbern in den Bildern.</p>
-            <p>Anna und Richard</p>
+            <p>Richard</p>
         </div>
-        <div class="box"><img :src="`http://localhost/api/images/2315`"></div>
+        <div class="box"><img :src="`http://localhost/api/images/2475`"></div>
     </div>
 </template>
 

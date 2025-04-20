@@ -67,7 +67,6 @@ function fetchImageIds() {
         .then(res => res.json())
         .then(res => {
             imageIds.value = res
-            console.log(route)
             if (typeof route.params.imgId === "string" && route.params.imgId !== "") {
                 const imageIndex = imageIds.value?.indexOf(parseInt(route.params.imgId)) ?? -1
                 if (imageIndex > -1) {

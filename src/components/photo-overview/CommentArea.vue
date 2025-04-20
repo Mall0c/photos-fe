@@ -52,29 +52,31 @@ function truncateText(text: string) {
  * Fetch comments from backend.
  */
 function fetchImageData(imageUuid: number | undefined, page: number) {
-    fetch(`http://localhost/api/comments/${imageUuid}/${page}`)
-        .then(res => res.json())
-        .then(res => {
-            res.forEach((comment: TComment) => {
-                comments.value.push(comment)
+    if (imageUuid !== undefined) {
+        fetch(`http://localhost/api/comments/${imageUuid}/${page}`)
+            .then(res => res.json())
+            .then(res => {
+                res.forEach((comment: TComment) => {
+                    comments.value.push(comment)
+                })
             })
-        })
-        .catch(err => errorStore.setError(err))
+            .catch(err => errorStore.setError(err))
 
-    fetch(`http://localhost/api/images/metadata/${imageUuid}`)
-        .then(res => res.json())
-        .then(res => {
-            imageData.value = res
-            if (imageData.value !== null) {
-                truncatedDescription.value = truncateText(imageData.value.description)
-            }
-            // Check if the text is truncated, or not. If not, there is no reason to show the text
-            // "mehr anzeigen" in the description.
-            if (hasTextBeenTruncated.value === false) {
-                isTruncated.value = false
-            }
-        })
-        .catch(err => errorStore.setError(err))
+        fetch(`http://localhost/api/images/metadata/${imageUuid}`)
+            .then(res => res.json())
+            .then(res => {
+                imageData.value = res
+                if (imageData.value !== null) {
+                    truncatedDescription.value = truncateText(imageData.value.description)
+                }
+                // Check if the text is truncated, or not. If not, there is no reason to show the text
+                // "mehr anzeigen" in the description.
+                if (hasTextBeenTruncated.value === false) {
+                    isTruncated.value = false
+                }
+            })
+            .catch(err => errorStore.setError(err))
+    }
 }
 
 // https://stackoverflow.com/a/71185823
