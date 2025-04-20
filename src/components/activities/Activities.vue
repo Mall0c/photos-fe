@@ -30,7 +30,7 @@ const activities: Ref<TActivities> = ref(
  * Fetch activities from backend.
  */
 function fetchActivities(type: keyof TActivities) {
-    let url = `http://localhost/api/activities/${type}`
+    let url = `https://richardsteinbrecht.de/api/activities/${type}`
     const requestOptions: any = {
         method: "GET",
         headers: {

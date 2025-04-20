@@ -53,7 +53,7 @@ function onSuccess(values: Record<string, string>) {
         body: JSON.stringify(values)
     }
 
-    fetch("http://localhost/api/user/register", requestOptions)
+    fetch("https://richardsteinbrecht.de/api/user/register", requestOptions)
         .then(async res => {
             const responseParsed = await res.json()
             if (res.status === 201) {

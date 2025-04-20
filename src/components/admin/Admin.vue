@@ -32,7 +32,7 @@ function fetchUsers(offset: number) {
                 "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-        fetch(`http://localhost/api/users/${offset}`, requestOptions)
+        fetch(`https://richardsteinbrecht.de/api/users/${offset}`, requestOptions)
             .then(async response => {
                 const responseParsed = await response.json()
                 if (response.status === 200) {
@@ -100,7 +100,7 @@ function saveUserChanges(idx: number, userId?: number) {
                 },
                 body: JSON.stringify({ name: userName, role: roleAsNumber })
             }
-            fetch(`http://localhost/api/user/edit/${userId}`, requestOptions)
+            fetch(`https://richardsteinbrecht.de/api/user/edit/${userId}`, requestOptions)
                 .then(async response => {
                     const responseParsed = await response.json()
                     if (response.status === 200) {
@@ -131,7 +131,7 @@ function deleteUser(userId?: number) {
                 "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-    fetch(`http://localhost/api/admin/user/${userId}`, requestOptions)
+    fetch(`https://richardsteinbrecht.de/api/admin/user/${userId}`, requestOptions)
         .then(async response => {
             const responseParsed = await response.json()
             if (response.status === 200) {

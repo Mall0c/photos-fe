@@ -21,7 +21,7 @@ function upload() {
         formData.append('image', fileInput.value?.files[0])
         formData.append('type', props.imageType.toString())
         formData.append('description', imageDescription.value)
-        fetch(`http://localhost/api/images-by-guests`, 
+        fetch(`https://richardsteinbrecht.de/api/images-by-guests`, 
             {
                 method: "POST",
                 body: formData,

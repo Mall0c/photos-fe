@@ -52,7 +52,7 @@ function saveData(type: "general" | "password") {
         },
         body: JSON.stringify(data)
     }
-    fetch(`http://localhost/api/user/edit/${authStore.userId}`, requestOptions)
+    fetch(`https://richardsteinbrecht.de/api/user/edit/${authStore.userId}`, requestOptions)
         .then(async response => {
             if (response.status === 200) {
                 if (type === "general") {

@@ -34,7 +34,7 @@ function deleteComment(commentId: number) {
                 "X-Auth-Token": "Bearer " + jwtToken
             }
         }
-    fetch(`http://localhost/api/comments/${commentId}`, requestOptions)
+    fetch(`https://richardsteinbrecht.de/api/comments/${commentId}`, requestOptions)
         .then(async response => {
             if (response.status === 200) {
                 console.log("Success")

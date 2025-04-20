@@ -11,7 +11,7 @@
             <p>Viel Freude beim Stöbern in den Bildern.</p>
             <p>Richard</p>
         </div>
-        <div class="box"><img :src="`http://localhost/api/images/2475`"></div>
+        <div class="box"><img :src="`https://richardsteinbrecht.de/api/images/2475`"></div>
     </div>
 </template>
 
