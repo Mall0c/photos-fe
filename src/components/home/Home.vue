@@ -12,7 +12,7 @@ import { getAPIURL } from "@/utils"
             <p>Viel Freude beim Stöbern in den Bildern.</p>
             <p>Richard</p>
         </div>
-        <div class="box"><img :src="`${getAPIURL()}/api/images/2475`"></div>
+        <div class="box"><img :src="`${getAPIURL()}/api/images/5`"></div>
     </div>
 </template>
 
