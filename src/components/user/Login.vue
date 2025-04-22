@@ -10,11 +10,9 @@ const errorStore = useErrorStore()
 const authStore = useAuthStore()
 const router = useRouter()
 
-const jwtToken = authStore.token
-
 const userSchema = yup.object({
-    email: yup.string().required().email(),
-    password: yup.string().required()
+    loginEmail: yup.string().required().email(),
+    loginPassword: yup.string().required()
 })
 
 const { values, errors, handleSubmit, defineField } = useForm({
@@ -22,10 +20,10 @@ const { values, errors, handleSubmit, defineField } = useForm({
 });
 
 
-const [email, emailAttrs] = defineField('email', {
+const [loginEmail, loginEmailAttrs] = defineField('loginEmail', {
     validateOnModelUpdate: false
 });
-const [password, passwordAttrs] = defineField('password', {
+const [loginPassword, loginPasswordAttrs] = defineField('loginPassword', {
     validateOnModelUpdate: false,
 });
 
@@ -43,9 +41,7 @@ function onSuccess(values: Record<string, unknown>) {
                 authStore.setUserData(responseParsed.token, responseParsed.userInfo)
                 router.go(0)
             } else if (res.status === 401) {
-                if (responseParsed.errorcode === 1) {
-                    errorStore.setError("Benutzer existiert nicht oder das Passwort ist falsch.")
-                }
+                errorStore.setError(responseParsed.text)
             }
         })
 }
@@ -77,18 +73,14 @@ const onSubmitForm = handleSubmit(onSuccess, onInvalidSubmit)
         <div class="input-container">
             <form @submit="onSubmitForm">
                 <div class="input-field-title">E-Mail</div>
-                <hr>
-                <div class="input-field">
-                    <input v-model="email" v-bind="emailAttrs" type="text" name="email" />
+                <div>
+                    <input v-model="loginEmail" v-bind="loginEmailAttrs" type="text" name="loginEmail" class="text-input" />
                 </div>
-                <hr>
                 <div class="input-field-title">Passwort</div>
-                <hr>
-                <div class="input-field">
-                    <input v-model="password" v-bind="passwordAttrs" type="password" name="password" />
+                <div>
+                    <input v-model="loginPassword" v-bind="loginPasswordAttrs" type="password" name="loginPassword" class="text-input" />
                 </div>
-                <hr>
-                <button>Login</button>
+                <button class="signup-button">Login</button>
             </form>
         </div>
     </div>

@@ -3,7 +3,8 @@ import { ref, onBeforeMount, useTemplateRef, watch, type Ref } from 'vue';
 import CommentArea from '@/components/photo-overview/CommentArea.vue';
 import UploadImage from '@/components/photo-overview/UploadImage.vue';
 import { useRoute, useRouter } from 'vue-router'
-import { getAPIURL, getParentPath } from '@/utils'
+import { getAPIURL } from '@/utils'
+import { useAuthStore } from '@/stores/auth.store';
 
 export type TImage = {
     id?: number
@@ -15,6 +16,7 @@ export type TImage = {
     username?: string
 }
 
+const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 const imageIds: Ref<Array<number> | null> = ref(null)
@@ -105,7 +107,8 @@ watch(currentImageIdInDialog, (newVal, oldVal) => {
     <!-- Main content -->
     <div class="content">
         <div class="image-upload-btn-container">
-            <b @click="uploadImageComponent?.openImageUploadDialog">Bild hochladen</b>
+            <b v-if="authStore.jwtToken" @click="uploadImageComponent?.openImageUploadDialog">Bild hochladen</b>
+            <b v-else><router-link to="/signup">Anmelden, um Bilder hochzuladen</router-link></b>
         </div>
         <div v-if="imageIds" class="image-container">
             <div v-for="imageId in imageIds" class="image-preview-box">

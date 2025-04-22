@@ -23,27 +23,34 @@ if (authStore.token !== null) {
 }
 
 const schema = yup.object({
-    email: yup.string().required().email(),
-    password: yup.string().required(),
-    passwordConfirm: yup.string().required(),
-    name: yup.string().required()
+    registerEmail: yup.string().required().email(),
+    registerPassword: yup.string().required(),
+    registerPasswordConfirm: yup.string().required(),
+    registerName: yup.string().required(),
+    registrationToken: yup.string().required()
 })
 
 const { values, errors, handleSubmit, defineField } = useForm({
     validationSchema: schema
 });
 
-const [email, emailAttrs] = defineField('email', {
+const [registerEmail, registerEmailAttrs] = defineField('registerEmail', {
     validateOnModelUpdate: false,
 });
 
-const [password, passwordAttrs] = defineField('password', {
+const [registerPassword, registerPasswordAttrs] = defineField('registerPassword', {
     validateOnModelUpdate: false,
 });
-const [passwordConfirm, passwordConfirmAttrs] = defineField('passwordConfirm', {
+
+const [registerPasswordConfirm, registerPasswordConfirmAttrs] = defineField('registerPasswordConfirm', {
     validateOnModelUpdate: false,
 });
-const [name, nameAttrs] = defineField('name', {
+
+const [registerName, registerNameAttrs] = defineField('registerName', {
+    validateOnModelUpdate: false,
+});
+
+const [registrationToken, registrationTokenAttrs] = defineField('registrationToken', {
     validateOnModelUpdate: false,
 });
 
@@ -61,12 +68,8 @@ function onSuccess(values: Record<string, string>) {
                 //localStorage.setItem('token', res.token)
                 authStore.setUserData(responseParsed.token, responseParsed.userInfo)
                 router.go(0)
-            } else if (res.status === 400) {
-                if (responseParsed.errorcode === 4) {
-                    errorStore.setError("E-Mail-Adresse ist bereits in Benutzung.")
-                } else if (responseParsed.errorcode === 5) {
-                    errorStore.setError("Name ist bereits in Benutzung.")
-                }
+            } else if (res.status === 400 || res.status === 401) {
+                errorStore.setError(responseParsed.text)
             }
         })
 }
@@ -98,30 +101,26 @@ const onSubmitForm = handleSubmit(onSuccess, onInvalidSubmit)
         <div class="input-container">
             <form @submit="onSubmitForm">
                 <div class="input-field-title">E-Mail</div>
-                <hr>
-                <div class="input-field">
-                    <input v-model="email" v-bind="emailAttrs" type="text" name="email" />
+                <div>
+                    <input v-model="registerEmail" v-bind="registerEmailAttrs" type="text" name="registerEmail" class="text-input" />
                 </div>
-                <hr>
                 <div class="input-field-title">Name</div>
-                <hr>
-                <div class="input-field">
-                    <input v-model="name" v-bind="nameAttrs" type="text" name="name" />
+                <div>
+                    <input v-model="registerName" v-bind="registerNameAttrs" type="text" name="registerName" class="text-input" />
                 </div>
-                <hr>
                 <div class="input-field-title">Passwort</div>
-                <hr>
-                <div class="input-field">
-                    <input v-model="password" v-bind="passwordAttrs" type="text" name="passwordAttrs" />
+                <div>
+                    <input v-model="registerPassword" v-bind="registerPasswordAttrs" type="password" name="registerPasswordAttrs" class="text-input" />
                 </div>
-                <hr>
                 <div class="input-field-title">Passwort wiederholen</div>
-                <hr>
-                <div class="input-field">
-                    <input v-model="passwordConfirm" v-bind="passwordConfirmAttrs" type="text" name="passwordConfirm" />
+                <div>
+                    <input v-model="registerPasswordConfirm" v-bind="registerPasswordConfirmAttrs" type="password" name="registerPasswordConfirm" class="text-input" />
                 </div>
-                <hr>
-                <button>Registrieren</button>
+                <div class="input-field-title">Registration Token</div>
+                <div>
+                    <input v-model="registrationToken" v-bind="registrationTokenAttrs" type="password" name="registrationToken" class="text-input" />
+                </div>
+                <button class="signup-button">Registrieren</button>
             </form>
         </div>
     </div>

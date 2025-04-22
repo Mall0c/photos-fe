@@ -49,6 +49,7 @@ const emit = defineEmits(['closeNotification'])
         align-items: center;
         align-content: center;
         position: absolute;
+        transform: translate(-50%, 0%);
         width: 400px;
         height: 50px;
         background-color: red;

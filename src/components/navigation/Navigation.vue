@@ -18,7 +18,7 @@ function logout() {
 <template>
     <ul>
         <li><router-link to="/home">Home</router-link></li>
-        <li><router-link to="/gallery">Galerie</router-link></li>
+        <li><router-link :to="{ name: 'gallery' }">Galerie</router-link></li>
         <li><router-link to="/guests-gallery">Gästebilder</router-link></li>
         <li><router-link to="/activities">Aktivitäten</router-link></li>
         <!-- Can this be done better? With slots? Dont know if it makes sense with slots. -->

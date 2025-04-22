@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getAPIURL } from "@/utils"
 
+const COVER_IMAGE = import.meta.env.VITE_COVER_IMAGE
 </script>
 
 <template>
@@ -12,14 +13,14 @@ import { getAPIURL } from "@/utils"
             <p>Viel Freude beim Stöbern in den Bildern.</p>
             <p>Richard</p>
         </div>
-        <div class="box"><img :src="`${getAPIURL()}/api/images/5`"></div>
+        <div class="box"><img :src="`${getAPIURL()}/api/images/${COVER_IMAGE}`"></div>
     </div>
 </template>
 
 <style>
     .landing-page-container {
         display: grid;
-        grid-template-columns: 1fr 1fr; /* Creates two equal columns */
+        grid-template-columns: repeat(2, 1fr); /* Creates two equal columns */
         justify-items: center;
     }
 
@@ -34,5 +35,11 @@ import { getAPIURL } from "@/utils"
     .box img {
         max-width: 80vh;
         max-height: 80vh;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .landing-page-container {
+            grid-template-columns: repeat(1, 1fr); /* Creates two equal columns */
+        }
     }
 </style>

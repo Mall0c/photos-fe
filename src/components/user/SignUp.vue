@@ -6,6 +6,7 @@ import Register from "@/components/user/Register.vue"
 
 <template>
     <Login></Login>
+    <hr>
     <Register></Register>
 </template>
 
@@ -19,8 +20,9 @@ import Register from "@/components/user/Register.vue"
 }
 
 .input-container {
-    border: 1px solid red;
+    border: 0px solid red;
     width: 30%;
+    padding: 10px;
     display: flex;
     flex-flow: wrap;
     justify-content: center;
@@ -28,18 +30,22 @@ import Register from "@/components/user/Register.vue"
 
 .input-field-title {
     font-size: 20px;
+    padding: 5px 0 5px 0;
 }
 
-.input-container hr {
-    width: 100%;
-    flex-basis: 100%;
-    height: 0;
-    margin: 0;
-    border: 0;
+.text-input {
+    background-color: rgb(236, 236, 236);
+    padding: 5px;
 }
 
-.input-field {
-    border: 1px solid green;
+.signup-button {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    border: 0px;
+    border-radius: 5px;
 }
 
 </style>

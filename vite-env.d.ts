@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
     readonly VITE_API_URL: string;
+    readonly VITE_COVER_IMAGE: number;
     // add more env vars here if needed
 }
 

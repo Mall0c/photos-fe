@@ -110,13 +110,7 @@ function submitComment() {
                     comments.value.push(responseParsed)
                     commentMessage.value = ""
                 } else if (response.status === 400) {
-                    if (responseParsed.errorcode === 1) {
-                        errorStore.setError("Ungültiger Kommentar.")
-                    } else if (responseParsed.errorcode === 2) {
-                        errorStore.setError("Kommentar ist leer.")
-                    } else if (responseParsed.errorcode === 3) {
-                        errorStore.setError("Kommentar ist zu lang.")
-                    }
+                    errorStore.setError(responseParsed.text)
                 }
             })
             .catch(err => {
