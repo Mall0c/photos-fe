@@ -18,7 +18,6 @@ export default defineConfig({
         }
     },
     define: {
-        'VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
         'VITE_COVER_IMAGE': JSON.stringify(process.env.VITE_COVER_IMAGE)
     }
 })

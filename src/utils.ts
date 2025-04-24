@@ -51,5 +51,5 @@ export function getParentPath(route: RouteLocationNormalizedLoaded) {
 }
 
 export function getAPIURL() {
-    return import.meta.env.VITE_API_URL
+    return window.location.origin
 }
